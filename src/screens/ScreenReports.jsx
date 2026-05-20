@@ -9,15 +9,18 @@ export function ScreenReports({ tier }) {
   const filtered = D.reports.filter(r => {
     if (!accessible(r)) return false;
     if (filter === 'all') return true;
-    return r.type.toLowerCase().startsWith(filter);
+    if (filter === 'executive') return r.type === 'Ejecutivo';
+    if (filter === 'analytical') return r.type === 'Analítico';
+    if (filter === 'regulatory') return r.type === 'Regulatorio';
+    return true;
   });
 
   return (
     <>
       <PageHead
         eyebrow="Repositorio institucional · Trazabilidad"
-        title="Reports"
-        desc="Repositorio cronológico de reportes descargables en PDF. Executive (mensual T1) · Analytical (quincenal T2) · Regulatory (bajo solicitud T3)."
+        title="Reportes"
+        desc="Repositorio cronológico de reportes descargables en PDF. Ejecutivo (mensual T1) · Analítico (quincenal T2) · Regulatorio (bajo solicitud T3)."
         meta={[
           { label: 'Reportes accesibles', value: `${filtered.length} / ${D.reports.length}` },
           { label: 'Cobertura',           value: 'Feb 2026 — May 2026' },
@@ -26,24 +29,28 @@ export function ScreenReports({ tier }) {
       />
 
       <div className="grid-3" style={{ marginBottom: 24 }}>
-        {[
-          { tier: 1, label: 'Tier 1 · Executive',  title: 'Executive Report',  sub: 'Mensual · síntesis ejecutiva' },
-          { tier: 2, label: 'Tier 2 · Analytical', title: 'Analytical Report', sub: 'Quincenal · analítica profunda' },
-          { tier: 3, label: 'Tier 3 · Regulatory', title: 'Regulatory / Risk', sub: 'Bajo solicitud · supervisión' },
-        ].map(rt => (
-          <div key={rt.tier} className="card" style={{ padding: 20, opacity: tier >= rt.tier ? 1 : 0.55, background: tier >= rt.tier ? 'var(--surface)' : 'var(--surface-2)' }}>
-            <Eyebrow>{rt.label}</Eyebrow>
-            <div className="display" style={{ fontSize: 22, marginTop: 8 }}>{rt.title}</div>
-            <div style={{ fontSize: 12.5, color: 'var(--ink-4)', marginTop: 4 }}>{rt.sub}</div>
-          </div>
-        ))}
+        <div className="card" style={{ padding: 20, background: tier >= 1 ? 'var(--surface)' : 'var(--surface-2)', opacity: tier >= 1 ? 1 : 0.55 }}>
+          <Eyebrow>Tier 1 · Ejecutivo</Eyebrow>
+          <div className="display" style={{ fontSize: 22, marginTop: 8 }}>Reporte ejecutivo</div>
+          <div style={{ fontSize: 12.5, color: 'var(--ink-4)', marginTop: 4 }}>Mensual · síntesis ejecutiva</div>
+        </div>
+        <div className="card" style={{ padding: 20, background: tier >= 2 ? 'var(--surface)' : 'var(--surface-2)', opacity: tier >= 2 ? 1 : 0.55 }}>
+          <Eyebrow>Tier 2 · Analítico</Eyebrow>
+          <div className="display" style={{ fontSize: 22, marginTop: 8 }}>Reporte analítico</div>
+          <div style={{ fontSize: 12.5, color: 'var(--ink-4)', marginTop: 4 }}>Quincenal · analítica profunda</div>
+        </div>
+        <div className="card" style={{ padding: 20, background: tier >= 3 ? 'var(--surface)' : 'var(--surface-2)', opacity: tier >= 3 ? 1 : 0.55 }}>
+          <Eyebrow>Tier 3 · Regulatorio</Eyebrow>
+          <div className="display" style={{ fontSize: 22, marginTop: 8 }}>Reporte regulatorio</div>
+          <div style={{ fontSize: 12.5, color: 'var(--ink-4)', marginTop: 4 }}>Bajo solicitud · supervisión</div>
+        </div>
       </div>
 
       <div className="tabs">
         <button className="tab" data-on={filter === 'all'}        onClick={() => setFilter('all')}>Todos ({D.reports.filter(accessible).length})</button>
-        <button className="tab" data-on={filter === 'executive'}  onClick={() => setFilter('executive')}>Executive</button>
-        {tier >= 2 && <button className="tab" data-on={filter === 'analytical'} onClick={() => setFilter('analytical')}>Analytical</button>}
-        {tier >= 3 && <button className="tab" data-on={filter === 'regulatory'} onClick={() => setFilter('regulatory')}>Regulatory</button>}
+        <button className="tab" data-on={filter === 'executive'}  onClick={() => setFilter('executive')}>Ejecutivo</button>
+        {tier >= 2 && <button className="tab" data-on={filter === 'analytical'} onClick={() => setFilter('analytical')}>Analítico</button>}
+        {tier >= 3 && <button className="tab" data-on={filter === 'regulatory'} onClick={() => setFilter('regulatory')}>Regulatorio</button>}
       </div>
 
       <div className="stack" style={{ gap: 12 }}>
@@ -69,8 +76,7 @@ export function ScreenReports({ tier }) {
               </div>
             </div>
             <div className="cluster">
-              <button className="btn-ghost">Previsualizar</button>
-              <button className="btn-primary">Descargar PDF</button>
+              <button className="btn-primary">Previsualizar</button>
             </div>
           </div>
         ))}

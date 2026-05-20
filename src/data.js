@@ -31,40 +31,66 @@ export const indexFamilies = [
 export const indicesSpec = [
   { code: 'BBPI',     family: 'price',      name: 'BOB/USDT–USDC Benchmark',         purpose: 'Precio P2P consolidado',                 tiers: [1,2,3], value: 6.92,  unit: 'BOB',   delta: '+0.41%',   deltaM: '+0.91%',   risk: 'low',  min: 6.40, max: 7.20, threshold: 7.10 },
   { code: 'BPX',      family: 'price',      name: 'Premium sobre referencia',         purpose: 'Prima del P2P vs. oficial',               tiers: [1,2,3], value: 8.12,  unit: '%',     delta: '+0.04 pp', deltaM: '+0.32 pp', risk: 'med',  min: 0,    max: 15,   threshold: 10 },
-  { code: 'BBPI-ALT', family: 'price',      name: 'Benchmark cripto alternativos',    purpose: 'BTC, ETH y altcoins',                     tiers: [2,3],   value: 112.4, unit: 'idx',   delta: '+1.24%',   deltaM: '+4.20%',   risk: 'low',  min: 95,   max: 130,  threshold: null },
-  { code: 'LDI',      family: 'liquidity',  name: 'Liquidity Depth Index',            purpose: 'Profundidad visible de libro',            tiers: [2,3],   value: 0.62,  unit: 'idx',   delta: '−2.10%',   deltaM: '−4.80%',   risk: 'high', min: 0.30, max: 1.00, threshold: 0.50 },
-  { code: 'VEI',      family: 'liquidity',  name: 'Volume Estimation Index',          purpose: 'Volumen proxy diario',                    tiers: [2,3],   value: 24.1,  unit: 'USD M', delta: '+3.80%',   deltaM: '+8.50%',   risk: 'low',  min: 15,   max: 28,   threshold: null },
-  { code: 'VPR',      family: 'liquidity',  name: 'Variation of Posted Capacity',     purpose: 'Variación de capacidad observada',        tiers: [2,3],   value: 1.34,  unit: 'ratio', delta: '+0.12x',   deltaM: '+0.18x',   risk: 'med',  min: 0.80, max: 1.80, threshold: 1.50 },
-  { code: 'PCI',      family: 'structure',  name: 'Platform Concentration Index',     purpose: 'HHI por plataforma',                      tiers: [2,3],   value: 0.51,  unit: 'HHI',   delta: '−0.01',    deltaM: '−0.04',    risk: 'med',  min: 0.30, max: 0.70, threshold: 0.60 },
-  { code: 'MCI',      family: 'structure',  name: 'Merchant Concentration Index',     purpose: 'HHI por comerciante',                     tiers: [2,3],   value: 0.38,  unit: 'HHI',   delta: '+0.02',    deltaM: '+0.04',    risk: 'med',  min: 0.20, max: 0.55, threshold: 0.45 },
-  { code: 'BSI',      family: 'structure',  name: 'Buy/Sell Imbalance',               purpose: 'Desbalance del libro',                    tiers: [2,3],   value: 12.4,  unit: '%',     delta: '+1.10 pp', deltaM: '+3.20 pp', risk: 'med',  min: -25,  max: 25,   threshold: 15 },
-  { code: 'BES',      family: 'compliance', name: 'Bank Exposure Score',              purpose: 'Exposición agregada por rail bancario',   tiers: [2,3],   value: 0.74,  unit: 'score', delta: '+0.03',    deltaM: '+0.06',    risk: 'high', min: 0.40, max: 1.00, threshold: 0.70 },
-  { code: 'MRP',      family: 'compliance', name: 'Merchant Risk Profile',            purpose: 'Score de riesgo medio por operador',      tiers: [2,3],   value: 62,    unit: '/100',  delta: '−1',       deltaM: '−3',       risk: 'med',  min: 40,   max: 80,   threshold: 70 },
-  { code: 'SDR',      family: 'compliance', name: 'Stablecoin Dominance Ratio',       purpose: 'Dominancia stable sobre el total cripto', tiers: [1,2,3], value: 87.4,  unit: '%',     delta: '−0.30 pp', deltaM: '−0.80 pp', risk: 'low',  min: 80,   max: 95,   threshold: 92 },
-  { code: 'CRI',      family: 'compliance', name: 'Compliance Readiness Index',       purpose: 'Carga regulatoria y disposición',         tiers: [2,3],   value: 0.71,  unit: 'score', delta: '+0.02',    deltaM: '+0.05',    risk: 'med',  min: 0.50, max: 1.00, threshold: 0.80 },
+  { code: 'BBPI-ALT', family: 'price',      name: 'Benchmark cripto alternativos',    purpose: 'BTC, ETH y altcoins',                     tiers: [1,2,3], value: 112.4, unit: 'idx',   delta: '+1.24%',   deltaM: '+4.20%',   risk: 'low',  min: 95,   max: 130,  threshold: null },
+  { code: 'LDI',      family: 'liquidity',  name: 'Liquidity Depth Index',            purpose: 'Profundidad visible de libro',            tiers: [1,2,3], value: 0.62,  unit: 'idx',   delta: '−2.10%',   deltaM: '−4.80%',   risk: 'high', min: 0.30, max: 1.00, threshold: 0.50 },
+  { code: 'VEI',      family: 'liquidity',  name: 'Volume Estimation Index',          purpose: 'Volumen proxy diario',                    tiers: [1,2,3], value: 24.1,  unit: 'USD M', delta: '+3.80%',   deltaM: '+8.50%',   risk: 'low',  min: 15,   max: 28,   threshold: null },
+  { code: 'VPR',      family: 'liquidity',  name: 'Variation of Posted Capacity',     purpose: 'Variación de capacidad observada',        tiers: [1,2,3], value: 1.34,  unit: 'ratio', delta: '+0.12x',   deltaM: '+0.18x',   risk: 'med',  min: 0.80, max: 1.80, threshold: 1.50 },
+  { code: 'PCI',      family: 'structure',  name: 'Platform Concentration Index',     purpose: 'HHI por plataforma',                      tiers: [1,2,3], value: 0.51,  unit: 'HHI',   delta: '−0.01',    deltaM: '−0.04',    risk: 'med',  min: 0.30, max: 0.70, threshold: 0.60 },
+  { code: 'MCI',      family: 'structure',  name: 'Merchant Concentration Index',     purpose: 'HHI por comerciante',                     tiers: [1,2,3], value: 0.38,  unit: 'HHI',   delta: '+0.02',    deltaM: '+0.04',    risk: 'med',  min: 0.20, max: 0.55, threshold: 0.45 },
+  { code: 'BSI',      family: 'structure',  name: 'Buy/Sell Imbalance',               purpose: 'Desbalance del libro',                    tiers: [1,2,3], value: 12.4,  unit: '%',     delta: '+1.10 pp', deltaM: '+3.20 pp', risk: 'med',  min: -25,  max: 25,   threshold: 15 },
+  { code: 'BES',      family: 'compliance', name: 'Bank Exposure Score',              purpose: 'Exposición agregada por riel bancario',   tiers: [3],     value: 0.74,  unit: 'score', delta: '+0.03',    deltaM: '+0.06',    risk: 'high', min: 0.40, max: 1.00, threshold: 0.70 },
+  { code: 'MRP',      family: 'compliance', name: 'Merchant Risk Profile',            purpose: 'Score de riesgo medio por operador',      tiers: [3],     value: 62,    unit: '/100',  delta: '−1',       deltaM: '−3',       risk: 'med',  min: 40,   max: 80,   threshold: 70 },
+  { code: 'SDR',      family: 'compliance', name: 'Stablecoin Dominance Ratio',       purpose: 'Dominancia stable sobre el total cripto', tiers: [3],     value: 87.4,  unit: '%',     delta: '−0.30 pp', deltaM: '−0.80 pp', risk: 'low',  min: 80,   max: 95,   threshold: 92 },
+  { code: 'CRI',      family: 'compliance', name: 'Compliance Readiness Index',       purpose: 'Carga regulatoria y disposición',         tiers: [3],     value: 0.71,  unit: 'score', delta: '+0.02',    deltaM: '+0.05',    risk: 'med',  min: 0.50, max: 1.00, threshold: 0.80 },
 ];
 
 export const platforms = [
-  { rank: 1, code: 'BIN', name: 'Binance P2P',    share: 41.2, buyOffers: 824, sellOffers: 612, completion: 98.4, spread: 0.42, risk: 'low',  tiers: [1,2,3] },
-  { rank: 2, code: 'OKX', name: 'OKX',             share: 18.7, buyOffers: 412, sellOffers: 281, completion: 96.2, spread: 0.61, risk: 'low',  tiers: [1,2,3] },
-  { rank: 3, code: 'BYB', name: 'Bybit',           share: 14.1, buyOffers: 318, sellOffers: 224, completion: 92.5, spread: 0.84, risk: 'med',  tiers: [1,2,3] },
-  { rank: 4, code: 'KCN', name: 'KuCoin',          share:  9.3, buyOffers: 211, sellOffers: 148, completion: 89.1, spread: 1.10, risk: 'med',  tiers: [1,2,3] },
-  { rank: 5, code: 'HUO', name: 'HTX (Huobi)',     share:  6.0, buyOffers: 134, sellOffers:  92, completion: 87.3, spread: 1.34, risk: 'med',  tiers: [2,3] },
-  { rank: 6, code: 'BIT', name: 'Bitget',          share:  4.4, buyOffers:  98, sellOffers:  71, completion: 85.0, spread: 1.52, risk: 'med',  tiers: [2,3] },
-  { rank: 7, code: 'PAX', name: 'Paxful',          share:  3.1, buyOffers:  62, sellOffers:  45, completion: 78.4, spread: 1.91, risk: 'high', tiers: [2,3] },
-  { rank: 8, code: 'LOC', name: 'LocalCoinSwap',   share:  1.9, buyOffers:  39, sellOffers:  28, completion: 71.2, spread: 2.40, risk: 'high', tiers: [2,3] },
-  { rank: 9, code: 'OTH', name: 'OTC / off-venue', share:  1.3, buyOffers:  18, sellOffers:  14, completion: null, spread: null, risk: 'high', tiers: [3] },
+  { rank: 1, code: 'BIN', name: 'Binance P2P', share: 48.2, buyOffers: 824, sellOffers: 612, completion: 98.4, spread: 0.42, risk: 'low',  tiers: [1,2,3], capacityBob: 102_400_000 },
+  { rank: 2, code: 'OKX', name: 'OKX',          share: 19.7, buyOffers: 412, sellOffers: 281, completion: 96.2, spread: 0.61, risk: 'low',  tiers: [1,2,3], capacityBob:   2_180_000 },
+  { rank: 3, code: 'BYB', name: 'Bybit',        share: 15.1, buyOffers: 318, sellOffers: 224, completion: 92.5, spread: 0.84, risk: 'med',  tiers: [1,2,3], capacityBob:  11_400_000 },
+  { rank: 4, code: 'KCN', name: 'KuCoin',       share: 10.3, buyOffers: 211, sellOffers: 148, completion: 89.1, spread: 1.10, risk: 'med',  tiers: [1,2,3], capacityBob:     420_000 },
+  { rank: 5, code: 'BIT', name: 'Bitget',       share:  6.7, buyOffers: 134, sellOffers:  92, completion: 87.3, spread: 1.34, risk: 'med',  tiers: [1,2,3], capacityBob:   5_800_000 },
+];
+
+export const capacityByCrypto = [
+  { code: 'USDT',  cap: 92_400_000 },
+  { code: 'USDC',  cap: 10_800_000 },
+  { code: 'BTC',   cap:  3_120_000 },
+  { code: 'BNB',   cap:  2_100_000 },
+  { code: 'ETH',   cap:  1_840_000 },
+  { code: 'XRP',   cap:  1_240_000 },
+  { code: 'ADA',   cap:    920_000 },
+  { code: 'DAI',   cap:    810_000 },
+  { code: 'SOL',   cap:    640_000 },
+  { code: 'FDUSD', cap:    520_000 },
+  { code: 'Otros', cap:  1_980_000 },
+];
+
+export const paymentMethods = [
+  { code: 'Bank transfer', mentions: 4820, capacity: 18_200_000 },
+  { code: 'BUN',           mentions: 3940, capacity: 17_100_000 },
+  { code: 'BGA',           mentions: 3810, capacity: 17_400_000 },
+  { code: 'BEC',           mentions: 3740, capacity: 18_900_000 },
+  { code: 'BCR',           mentions: 3010, capacity: 14_200_000 },
+  { code: 'BNB',           mentions: 2410, capacity: 11_800_000 },
+  { code: 'BME',           mentions: 2380, capacity: 12_400_000 },
+  { code: 'BSO',           mentions: 1620, capacity:  8_900_000 },
+  { code: 'BIE',           mentions: 1110, capacity:  7_400_000 },
+  { code: 'SoliPagos',     mentions:  820, capacity:  5_100_000 },
+  { code: 'Tigo Money',    mentions:  340, capacity:  2_800_000 },
+  { code: 'Yape',          mentions:  180, capacity:  1_400_000 },
+  { code: 'Otros',         mentions:  120, capacity:    980_000 },
 ];
 
 export const merchants = [
   { id: 'MX-0021', alias: 'Comerciante α', platform: 'Binance', capacity: 1240000, share: 8.4, mrp: 78, risk: 'low',  rails: ['BNB-BO', 'BCB'], status: 'active' },
-  { id: 'MX-0014', alias: 'Comerciante β', platform: 'Binance', capacity:  980000, share: 6.6, mrp: 71, risk: 'low',  rails: ['BMS'],          status: 'active' },
-  { id: 'MX-0009', alias: 'Comerciante γ', platform: 'OKX',     capacity:  840000, share: 5.7, mrp: 62, risk: 'med',  rails: ['BCB', 'BUN'],   status: 'active' },
-  { id: 'MX-0037', alias: 'Comerciante δ', platform: 'Bybit',   capacity:  610000, share: 4.1, mrp: 58, risk: 'med',  rails: ['BIE'],          status: 'review' },
-  { id: 'MX-0042', alias: 'Comerciante ε', platform: 'Binance', capacity:  540000, share: 3.6, mrp: 49, risk: 'med',  rails: ['BCB'],          status: 'active' },
-  { id: 'MX-0058', alias: 'Comerciante ζ', platform: 'KuCoin',  capacity:  410000, share: 2.8, mrp: 42, risk: 'high', rails: ['BUN', 'BIE'],   status: 'flagged' },
-  { id: 'MX-0064', alias: 'Comerciante η', platform: 'Bybit',   capacity:  380000, share: 2.6, mrp: 38, risk: 'high', rails: ['BMS'],          status: 'flagged' },
-  { id: 'MX-0071', alias: 'Comerciante θ', platform: 'Paxful',  capacity:  290000, share: 1.9, mrp: 31, risk: 'high', rails: ['BCB'],          status: 'flagged' },
+  { id: 'MX-0014', alias: 'Comerciante β', platform: 'Binance', capacity:  980000, share: 6.6, mrp: 71, risk: 'low',  rails: ['BMS'],            status: 'active' },
+  { id: 'MX-0009', alias: 'Comerciante γ', platform: 'OKX',     capacity:  840000, share: 5.7, mrp: 62, risk: 'med',  rails: ['BCB', 'BUN'],     status: 'active' },
+  { id: 'MX-0037', alias: 'Comerciante δ', platform: 'Bybit',   capacity:  610000, share: 4.1, mrp: 58, risk: 'med',  rails: ['BIE'],             status: 'review' },
+  { id: 'MX-0042', alias: 'Comerciante ε', platform: 'Binance', capacity:  540000, share: 3.6, mrp: 49, risk: 'med',  rails: ['BCB'],             status: 'active' },
+  { id: 'MX-0058', alias: 'Comerciante ζ', platform: 'KuCoin',  capacity:  410000, share: 2.8, mrp: 42, risk: 'high', rails: ['BUN', 'BIE'],     status: 'flagged' },
+  { id: 'MX-0064', alias: 'Comerciante η', platform: 'Bybit',   capacity:  380000, share: 2.6, mrp: 38, risk: 'high', rails: ['BMS'],             status: 'flagged' },
+  { id: 'MX-0071', alias: 'Comerciante θ', platform: 'Bitget',  capacity:  290000, share: 1.9, mrp: 31, risk: 'high', rails: ['BCB'],             status: 'flagged' },
 ];
 
 const totalMentions = 1284 + 942 + 813 + 612 + 511 + 388 + 271;
@@ -131,14 +157,14 @@ export const series = {
 };
 
 export const reports = [
-  { id: 'R-2026-04-E',  type: 'Executive',  title: 'Executive Market Brief — April 2026',      period: 'Abr 2026',  published: '30 Abr 2026', tier: 1, size: '2.4 MB' },
-  { id: 'R-2026-W18-A', type: 'Analytical', title: 'Analytical Market Report — Week 18 2026',  period: 'Sem. 18',   published: '07 May 2026', tier: 2, size: '5.8 MB' },
-  { id: 'R-2026-W17-A', type: 'Analytical', title: 'Analytical Market Report — Week 17 2026',  period: 'Sem. 17',   published: '30 Abr 2026', tier: 2, size: '5.6 MB' },
-  { id: 'R-2026-04-R',  type: 'Regulatory', title: 'Regulatory Risk Brief — April 2026',       period: 'Abr 2026',  published: '29 Abr 2026', tier: 3, size: '8.1 MB' },
-  { id: 'R-2026-03-E',  type: 'Executive',  title: 'Executive Market Brief — March 2026',      period: 'Mar 2026',  published: '31 Mar 2026', tier: 1, size: '2.3 MB' },
-  { id: 'R-2026-W16-A', type: 'Analytical', title: 'Analytical Market Report — Week 16 2026',  period: 'Sem. 16',   published: '23 Abr 2026', tier: 2, size: '5.7 MB' },
-  { id: 'R-2026-03-R',  type: 'Regulatory', title: 'Regulatory Risk Brief — March 2026',       period: 'Mar 2026',  published: '31 Mar 2026', tier: 3, size: '7.9 MB' },
-  { id: 'R-2026-02-E',  type: 'Executive',  title: 'Executive Market Brief — February 2026',   period: 'Feb 2026',  published: '28 Feb 2026', tier: 1, size: '2.2 MB' },
+  { id: 'R-2026-04-E',  type: 'Ejecutivo',   title: 'Reporte ejecutivo — Abril 2026',      period: 'Abr 2026',  published: '30 Abr 2026', tier: 1, size: '2.4 MB' },
+  { id: 'R-2026-W18-A', type: 'Analítico',   title: 'Reporte analítico — Semana 18 2026',  period: 'Sem. 18',   published: '07 May 2026', tier: 2, size: '5.8 MB' },
+  { id: 'R-2026-W17-A', type: 'Analítico',   title: 'Reporte analítico — Semana 17 2026',  period: 'Sem. 17',   published: '30 Abr 2026', tier: 2, size: '5.6 MB' },
+  { id: 'R-2026-04-R',  type: 'Regulatorio', title: 'Reporte regulatorio — Abril 2026',    period: 'Abr 2026',  published: '29 Abr 2026', tier: 3, size: '8.1 MB' },
+  { id: 'R-2026-03-E',  type: 'Ejecutivo',   title: 'Reporte ejecutivo — Marzo 2026',      period: 'Mar 2026',  published: '31 Mar 2026', tier: 1, size: '2.3 MB' },
+  { id: 'R-2026-W16-A', type: 'Analítico',   title: 'Reporte analítico — Semana 16 2026',  period: 'Sem. 16',   published: '23 Abr 2026', tier: 2, size: '5.7 MB' },
+  { id: 'R-2026-03-R',  type: 'Regulatorio', title: 'Reporte regulatorio — Marzo 2026',    period: 'Mar 2026',  published: '31 Mar 2026', tier: 3, size: '7.9 MB' },
+  { id: 'R-2026-02-E',  type: 'Ejecutivo',   title: 'Reporte ejecutivo — Febrero 2026',    period: 'Feb 2026',  published: '28 Feb 2026', tier: 1, size: '2.2 MB' },
 ];
 
 export const scenarios = [

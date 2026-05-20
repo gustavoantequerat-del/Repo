@@ -127,3 +127,246 @@ export function Spark({ data, w = 90, h = 22, stroke = 'var(--accent)', fill = '
     </svg>
   );
 }
+
+// data: [{ label, value, color? }]
+export function DonutChart({ data, height = 280, thickness = 36, centerLabel, centerValue, palette }) {
+  const [hover, setHover] = useState(null);
+  const colors = palette || [
+    '#2563EB', '#14B8A6', '#F59E0B', '#EF4444',
+    '#0891B2', '#7C3AED', '#94A3B8', '#0F172A',
+  ];
+
+  const total = data.reduce((s, d) => s + d.value, 0) || 1;
+  const cx = 150, cy = 150, r = 110;
+  const innerR = r - thickness;
+
+  let acc = 0;
+  const segs = data.map((d, i) => {
+    const pct = d.value / total;
+    const startA = acc * 2 * Math.PI - Math.PI / 2;
+    acc += pct;
+    const endA = acc * 2 * Math.PI - Math.PI / 2;
+    const x1 = cx + r * Math.cos(startA);
+    const y1 = cy + r * Math.sin(startA);
+    const x2 = cx + r * Math.cos(endA);
+    const y2 = cy + r * Math.sin(endA);
+    const xi2 = cx + innerR * Math.cos(endA);
+    const yi2 = cy + innerR * Math.sin(endA);
+    const xi1 = cx + innerR * Math.cos(startA);
+    const yi1 = cy + innerR * Math.sin(startA);
+    const largeArc = pct > 0.5 ? 1 : 0;
+    const path = `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} L ${xi2} ${yi2} A ${innerR} ${innerR} 0 ${largeArc} 0 ${xi1} ${yi1} Z`;
+    return { ...d, path, color: d.color || colors[i % colors.length], pct };
+  });
+
+  const active = hover != null ? segs[hover] : null;
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg viewBox="0 0 300 300" width="100%" height={height} style={{ display: 'block' }}
+           onMouseLeave={() => setHover(null)}>
+        {segs.map((s, i) => (
+          <path key={i} d={s.path} fill={s.color}
+                stroke="var(--surface)" strokeWidth="2"
+                opacity={hover == null || hover === i ? 1 : 0.45}
+                style={{ transition: 'opacity 0.12s ease', cursor: 'pointer' }}
+                onMouseEnter={() => setHover(i)} />
+        ))}
+        <text x={cx} y={cy - 6} textAnchor="middle"
+              fontSize="11" fill="var(--ink-5)"
+              letterSpacing="0.14em" fontWeight="700"
+              style={{ textTransform: 'uppercase' }}>
+          {active ? active.label : (centerLabel || 'Total')}
+        </text>
+        <text x={cx} y={cy + 18} textAnchor="middle"
+              fontSize="22" fill="var(--ink-1)" fontWeight="700"
+              fontFamily="var(--font-display)">
+          {active ? `${(active.pct * 100).toFixed(1)}%` : (centerValue || '')}
+        </text>
+      </svg>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 14px', justifyContent: 'center', marginTop: 8, fontSize: 11.5 }}>
+        {segs.map((s, i) => (
+          <span key={i}
+                onMouseEnter={() => setHover(i)}
+                onMouseLeave={() => setHover(null)}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+                         opacity: hover == null || hover === i ? 1 : 0.5,
+                         color: hover === i ? 'var(--ink-1)' : 'var(--ink-3)',
+                         fontWeight: hover === i ? 600 : 500 }}>
+            <span style={{ width: 10, height: 10, background: s.color, borderRadius: 2 }}></span>
+            {s.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// data: [{ label, value }]
+export function HBarChart({ data, height, color = 'var(--accent)', valueFmt, axisStep, axisLabel, labelWidth = 80, barThickness = 14 }) {
+  const wrapRef = useRef(null);
+  const [w, setW] = useState(620);
+  const [hover, setHover] = useState(null);
+
+  useEffect(() => {
+    const ro = new ResizeObserver(entries => {
+      for (const e of entries) setW(Math.max(320, Math.floor(e.contentRect.width)));
+    });
+    if (wrapRef.current) ro.observe(wrapRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const rowGap = Math.max(10, barThickness);
+  const rowH = barThickness + rowGap;
+  const padTop = 8, padBottom = 28;
+  const h = height || (data.length * rowH + padTop + padBottom);
+  const padL = labelWidth + 14;
+  const padR = 16;
+  const plotW = Math.max(40, w - padL - padR);
+
+  const max = Math.max(...data.map(d => d.value));
+  const step = axisStep || niceStep(max);
+  const niceMax = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let v = 0; v <= niceMax; v += step) ticks.push(v);
+
+  const xFor = v => padL + (v / niceMax) * plotW;
+  const yFor = i => padTop + i * rowH + rowGap / 2;
+
+  return (
+    <div ref={wrapRef} className="chart-wrap">
+      <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
+           onMouseLeave={() => setHover(null)} style={{ display: 'block' }}>
+        {ticks.map((t, i) => (
+          <line key={i} x1={xFor(t)} x2={xFor(t)} y1={padTop} y2={h - padBottom + 4}
+                stroke="var(--line-1)" strokeDasharray={i === 0 ? '' : '2 3'} />
+        ))}
+        {ticks.map((t, i) => (
+          <text key={i} x={xFor(t)} y={h - padBottom + 18} fontSize="10" textAnchor="middle"
+                fill="var(--ink-5)" fontFamily="var(--font-mono)">
+            {valueFmt ? valueFmt(t) : t}
+          </text>
+        ))}
+        {axisLabel && (
+          <text x={padL + plotW / 2} y={h - 4} fontSize="9.5" textAnchor="middle"
+                fill="var(--ink-4)" letterSpacing="0.08em">{axisLabel}</text>
+        )}
+        {data.map((d, i) => {
+          const y = yFor(i);
+          const barW = (d.value / niceMax) * plotW;
+          const isHover = hover === i;
+          return (
+            <g key={d.label} onMouseEnter={() => setHover(i)}>
+              <text x={padL - 10} y={y + barThickness / 2 + 3.5}
+                    fontSize="11.5" textAnchor="end"
+                    fill={isHover ? 'var(--ink-1)' : 'var(--ink-3)'}
+                    fontWeight={isHover ? 600 : 500}>{d.label}</text>
+              <rect x={0} y={y - rowGap / 2} width={w} height={rowH} fill="transparent" />
+              <rect x={padL} y={y} width={Math.max(1, barW)} height={barThickness}
+                    fill={isHover ? 'var(--accent-2)' : color} rx="2" />
+            </g>
+          );
+        })}
+      </svg>
+      {hover != null && (
+        <div className="chart-tooltip" data-show="true"
+             style={{ left: `${((padL + ((data[hover].value / niceMax) * plotW)) / w) * 100}%`,
+                      top: `${((yFor(hover) + barThickness / 2) / h) * 100}%` }}>
+          <div className="tt-date">{data[hover].label}</div>
+          <div className="tt-val">{valueFmt ? valueFmt(data[hover].value) : data[hover].value.toLocaleString('en-US')}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function VBarChart({ data, height = 240, color = 'var(--ink-1)', valueFmt, axisStep, axisLabel }) {
+  const wrapRef = useRef(null);
+  const [w, setW] = useState(620);
+  const [hover, setHover] = useState(null);
+
+  useEffect(() => {
+    const ro = new ResizeObserver(entries => {
+      for (const e of entries) setW(Math.max(320, Math.floor(e.contentRect.width)));
+    });
+    if (wrapRef.current) ro.observe(wrapRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const padL = 56, padR = 16, padTop = 14, padBottom = 50;
+  const h = height;
+  const plotW = Math.max(40, w - padL - padR);
+  const plotH = h - padTop - padBottom;
+
+  const max = Math.max(...data.map(d => d.value));
+  const step = axisStep || niceStep(max);
+  const niceMax = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let v = 0; v <= niceMax; v += step) ticks.push(v);
+
+  const n = data.length;
+  const slotW = plotW / n;
+  const barW = Math.min(40, slotW * 0.7);
+
+  const xFor = i => padL + i * slotW + (slotW - barW) / 2;
+  const yFor = v => padTop + (1 - (v / niceMax)) * plotH;
+
+  return (
+    <div ref={wrapRef} className="chart-wrap">
+      <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
+           onMouseLeave={() => setHover(null)} style={{ display: 'block' }}>
+        {ticks.map((t, i) => (
+          <g key={i}>
+            <line x1={padL} x2={padL + plotW} y1={yFor(t)} y2={yFor(t)}
+                  stroke="var(--line-1)" strokeDasharray={i === 0 ? '' : '2 3'} />
+            <text x={padL - 8} y={yFor(t) + 3} fontSize="10" textAnchor="end"
+                  fill="var(--ink-5)" fontFamily="var(--font-mono)">
+              {valueFmt ? valueFmt(t) : t}
+            </text>
+          </g>
+        ))}
+        {data.map((d, i) => {
+          const x = xFor(i);
+          const y = yFor(d.value);
+          const isHover = hover === i;
+          return (
+            <g key={d.label} onMouseEnter={() => setHover(i)}>
+              <rect x={x} y={y} width={barW} height={padTop + plotH - y}
+                    fill={isHover ? 'var(--accent)' : color} rx="2" />
+              <text x={x + barW / 2} y={h - padBottom + 18} fontSize="11" textAnchor="middle"
+                    fill={isHover ? 'var(--ink-1)' : 'var(--ink-3)'} fontWeight={isHover ? 600 : 500}>
+                {d.label}
+              </text>
+            </g>
+          );
+        })}
+        {axisLabel && (
+          <text x={20} y={padTop + plotH / 2} fontSize="9.5" textAnchor="middle"
+                fill="var(--ink-4)" letterSpacing="0.08em"
+                transform={`rotate(-90 20 ${padTop + plotH / 2})`}>{axisLabel}</text>
+        )}
+      </svg>
+      {hover != null && (
+        <div className="chart-tooltip" data-show="true"
+             style={{ left: `${((xFor(hover) + barW / 2) / w) * 100}%`,
+                      top: `${(yFor(data[hover].value) / h) * 100}%` }}>
+          <div className="tt-date">{data[hover].label}</div>
+          <div className="tt-val">{valueFmt ? valueFmt(data[hover].value) : data[hover].value.toLocaleString('en-US')}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function niceStep(max) {
+  if (max <= 0) return 1;
+  const raw = max / 5;
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / pow;
+  let nice;
+  if (norm <= 1) nice = 1;
+  else if (norm <= 2) nice = 2;
+  else if (norm <= 5) nice = 5;
+  else nice = 10;
+  return nice * pow;
+}

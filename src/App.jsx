@@ -8,7 +8,6 @@ import { ScreenBanks } from './screens/ScreenBanks.jsx';
 import { ScreenIndices } from './screens/ScreenIndices.jsx';
 import { ScreenMerchants } from './screens/ScreenMerchants.jsx';
 import { ScreenAlerts } from './screens/ScreenAlerts.jsx';
-import { ScreenScenarios } from './screens/ScreenScenarios.jsx';
 import { ScreenReports } from './screens/ScreenReports.jsx';
 import { alertRulesSeed, alertsSeed } from './data.js';
 
@@ -47,9 +46,14 @@ export default function App() {
   }, [t.displayFont]);
 
   const crumbs = {
-    overview: 'Overview', platforms: 'Platforms', cryptos: 'Cryptocurrencies',
-    banks: 'Banking Rails', indices: 'Indices', merchants: 'Merchants',
-    alerts: 'Alertas', scenarios: 'Escenarios', reports: 'Reports',
+    overview:  'Descripción general',
+    platforms: 'Plataformas',
+    cryptos:   'Criptoactivos',
+    banks:     'Rieles bancarios',
+    indices:   'Índices',
+    merchants: 'Comerciantes',
+    alerts:    'Alertas',
+    reports:   'Reportes',
   }[route];
 
   const accessibleAlertCount = alerts.filter(a => a.tier <= tier).length;
@@ -63,7 +67,6 @@ export default function App() {
     case 'indices':   Screen = <ScreenIndices tier={tier} />; break;
     case 'merchants': Screen = <ScreenMerchants tier={tier} />; break;
     case 'alerts':    Screen = <ScreenAlerts tier={tier} rules={rules} setRules={setRules} alerts={alerts} setAlerts={setAlerts} />; break;
-    case 'scenarios': Screen = <ScreenScenarios tier={tier} />; break;
     case 'reports':   Screen = <ScreenReports tier={tier} />; break;
     default:          Screen = <ScreenOverview tier={tier} />;
   }

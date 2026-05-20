@@ -1,35 +1,56 @@
 import { PageHead } from '../components/Shell.jsx';
-import { KpiStrip, RiskChip, Delta, Eyebrow } from '../components/Atoms.jsx';
-import { InteractiveChart, Spark } from '../components/Chart.jsx';
+import { RiskChip, Eyebrow } from '../components/Atoms.jsx';
+import { Spark, HBarChart, VBarChart } from '../components/Chart.jsx';
 import { Tip } from '../components/Tip.jsx';
 import { BP2_GLOSSARY } from '../glossary.jsx';
 import * as D from '../data.js';
 
+const TOP_KPI_CODES = ['BBPI', 'BPX', 'PCI'];
+
 export function ScreenOverview({ tier }) {
   const cadence = tier === 1 ? 'Resumen mensual' : tier === 2 ? 'Cierre diario consolidado' : 'Cierre EOD / T+1';
   const headerIndices = D.indicesSpec.filter(i => i.tiers.includes(tier)).slice(0, 6);
+  const topKpis = TOP_KPI_CODES.map(code => D.indicesSpec.find(i => i.code === code));
+
+  const platformsCap = [...D.platforms]
+    .sort((a, b) => b.capacityBob - a.capacityBob)
+    .map(p => ({ label: p.name.replace(' P2P', ''), value: p.capacityBob }));
 
   return (
     <>
       <PageHead
         eyebrow={tier === 1 ? 'Panel Ejecutivo · Tier 1' : tier === 2 ? 'Panel Profesional · Tier 2' : 'Panel Regulatorio · Tier 3'}
-        title="Overview"
-        desc="Feed de inteligencia institucional sobre el mercado P2P boliviano. Monitoreo de 13 índices propietarios BBIM a través del feed de Crystal con supervisión regulatoria."
+        title="Descripción general"
+        desc="Feed de inteligencia institucional sobre el mercado P2P boliviano. Monitoreo de 13 índices propietarios BBIM con supervisión regulatoria."
         meta={[
           { label: 'Cadencia', value: cadence },
-          { label: 'Snapshot', value: '30 Abr · 2026' },
-          { label: 'Última sync', value: '—2 min' },
+          { label: 'Captura', value: '30 Abr · 2026' },
+          { label: 'Última sincronización', value: '—2 min' },
         ]}
       />
 
-      <KpiStrip items={[
-        { label: 'BBPI · Benchmark P2P',    value: '6.92', unit: 'BOB', delta: '+0.41%',    deltaNote: 'vs. Mar', risk: 'low', tip: BP2_GLOSSARY.idx.BBPI },
-        { label: 'BPX · Premium',           value: '8.12', unit: '%',   delta: '+0.04 pp',  deltaNote: 'vs. Mar', risk: 'med', tip: BP2_GLOSSARY.idx.BPX },
-        { label: 'SDR · Dominancia stable', value: '87.4', unit: '%',   delta: '−0.30 pp',  deltaNote: 'vs. Mar', risk: 'low', tip: BP2_GLOSSARY.idx.SDR },
-        { label: 'Plataformas activas',     value: '9',                  delta: '+1',        deltaNote: 'vs. Mar', risk: 'low', tip: BP2_GLOSSARY.kpi.activePlatforms },
-      ]} />
-
-      <div style={{ height: 24 }} />
+      <div className="grid-3" style={{ marginBottom: 24 }}>
+        {topKpis.map(idx => (
+          <div className="card" key={idx.code}>
+            <div style={{ padding: '18px 20px 14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <Tip text={BP2_GLOSSARY.idx[idx.code]} pos="right">
+                  <span className="eyebrow" style={{ fontSize: 10, letterSpacing: '0.08em', cursor: 'default' }}>
+                    {idx.code} · {idx.name.toUpperCase()} <span style={{ fontSize: 9, opacity: 0.6 }}>ⓘ</span>
+                  </span>
+                </Tip>
+                <RiskChip level={idx.risk} />
+              </div>
+              <div style={{ fontSize: 36, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.02em', color: 'var(--ink-1)' }}>
+                {idx.value} <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--ink-4)' }}>{idx.unit}</span>
+              </div>
+              <div style={{ marginTop: 8, fontSize: 12, color: idx.delta.startsWith('+') ? 'var(--risk-low)' : idx.delta.startsWith('−') || idx.delta.startsWith('-') ? 'var(--risk-high)' : 'var(--ink-4)' }}>
+                {idx.delta.startsWith('+') ? '▲' : idx.delta.startsWith('−') || idx.delta.startsWith('-') ? '▼' : '■'} {idx.delta.replace(/^[+−-]/, '')} vs. Mar
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="grid-2">
         <div className="editorial-card">
@@ -38,7 +59,7 @@ export function ScreenOverview({ tier }) {
             <span className="num" style={{ color: 'var(--ink-4)', fontSize: 11 }}>BP2PIM · Abr 2026</span>
           </div>
           <p className="editorial" style={{ margin: 0 }}>
-            El mercado P2P boliviano cerró abril con un BPX de <strong>8.12%</strong> sobre la referencia oficial, sostenido por una compresión moderada de profundidad (LDI <strong>0.62</strong>) y una dominancia stable que sigue desplazándose hacia USDC. La concentración por plataforma se mantiene elevada — PCI <strong>0.51</strong> — y la exposición agregada por rail bancario sube a <strong>BES 0.74</strong>.
+            El mercado P2P boliviano cerró abril con un BPX de <strong>8.12%</strong> sobre la referencia oficial, sostenido por una compresión moderada de profundidad (LDI <strong>0.62</strong>) y una dominancia stable que sigue desplazándose hacia USDC. La concentración por plataforma se mantiene elevada — PCI <strong>0.51</strong> — y la exposición agregada por riel bancario sube a <strong>BES 0.74</strong>.
           </p>
           <p className="editorial" style={{ marginTop: 12, marginBottom: 0 }}>
             Recomendamos observar la transición USDT → USDC y el comportamiento del SDR antes de reasignar coberturas de exposición.
@@ -49,7 +70,7 @@ export function ScreenOverview({ tier }) {
         <div className="card">
           <div className="card-head">
             <div className="card-title">Pulso de índices</div>
-            <span className="eyebrow" style={{ fontSize: 9 }}>13 propietarios</span>
+            <span className="eyebrow" style={{ fontSize: 9 }}>{tier === 3 ? '13 propietarios' : '9 propietarios'}</span>
           </div>
           <div style={{ padding: '8px 22px 12px' }}>
             {headerIndices.map((idx, i) => (
@@ -71,78 +92,91 @@ export function ScreenOverview({ tier }) {
             ))}
           </div>
           <div className="card-foot">
-            Ver los 13 índices · módulo <span style={{ color: 'var(--accent-2)', fontWeight: 600 }}>Indices</span>
+            Ver los índices · módulo <span style={{ color: 'var(--accent-2)', fontWeight: 600 }}>Índices</span>
           </div>
         </div>
       </div>
 
       <div style={{ height: 24 }} />
 
-      <div className="card">
-        <div className="card-head">
-          <div>
-            <div className="card-title">BPX · Premium evolution</div>
-            <div className="card-sub">Prima del mercado P2P sobre la referencia oficial · 12 meses</div>
-          </div>
-          <div className="cluster">
-            <span className="num" style={{ fontSize: 22, fontWeight: 700, fontFamily: 'var(--font-display)' }}>8.12%</span>
-            <Delta value="+0.04 pp" />
-          </div>
-        </div>
-        <div className="card-body">
-          <InteractiveChart data={D.series.BPX} labels={D.monthsLabels} unit="%" height={240}
-                            showThreshold={9.0} thresholdLabel="Alerta" />
-        </div>
-      </div>
-
-      <div style={{ height: 24 }} />
-
-      <div className="grid-3">
-        <SimpleListCard title="Top plataformas"
-          rows={D.platforms.slice(0, 5).map(p => ({
-            left: <span className="logo-cell"><span className="logo-square">{p.code[0]}</span>{p.name}</span>,
-            right: `${p.share.toFixed(1)}%`,
-          }))} />
-        <SimpleListCard title="Top cryptocurrencies"
-          rows={D.cryptos.slice(0, 5).map(c => ({
-            left: <span className="logo-cell"><span className="logo-square">{c.code[0]}</span>{c.code}</span>,
-            right: `${c.share.toFixed(1)}%`,
-          }))} />
-        <SimpleListCard title="Exposición bancaria"
-          rows={D.banks.slice(0, 5).map(b => ({
-            left: (
-              <span style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: 'var(--ink-1)' }}>{b.name}</span>
-                <span style={{ fontSize: 10.5, color: 'var(--ink-5)', fontFamily: 'var(--font-mono)' }}>{b.code}</span>
-              </span>
-            ),
-            right: b.exposure.toFixed(2),
-            risk: b.risk,
-          }))} />
-      </div>
-    </>
-  );
-}
-
-function SimpleListCard({ title, rows }) {
-  return (
-    <div className="card">
-      <div className="card-head"><div className="card-title">{title}</div></div>
-      <div style={{ padding: '4px 22px 14px' }}>
-        {rows.map((r, i) => (
-          <div key={i} style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            padding: '12px 0',
-            borderBottom: i < rows.length - 1 ? '1px solid var(--line-1)' : 'none',
-          }}>
-            <div style={{ fontSize: 13 }}>{r.left}</div>
-            <div className="cluster">
-              {r.risk && <RiskChip level={r.risk} />}
-              <span className="num" style={{ fontSize: 13, color: 'var(--ink-1)', fontWeight: 600 }}>{r.right}</span>
+      <div className="grid-2-eq">
+        <div className="card">
+          <div className="card-head">
+            <div>
+              <div className="card-title">Capacidad visible por plataforma</div>
+              <div className="card-sub">Top plataformas por capacidad visible en BOB</div>
             </div>
           </div>
-        ))}
+          <div className="card-body">
+            <HBarChart
+              data={platformsCap}
+              barThickness={14}
+              color="var(--accent)"
+              labelWidth={70}
+              valueFmt={v => v >= 1e6 ? `${(v/1e6).toFixed(0)} M` : v >= 1e3 ? `${(v/1e3).toFixed(0)} k` : v}
+            />
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-head">
+            <div>
+              <div className="card-title">Capacidad por criptoactivo</div>
+              <div className="card-sub">Top 10 monedas + Otros</div>
+            </div>
+          </div>
+          <div className="card-body">
+            <VBarChart
+              data={D.capacityByCrypto.map(c => ({ label: c.code, value: c.cap }))}
+              height={260}
+              color="var(--ink-1)"
+              valueFmt={v => v >= 1e6 ? `${(v/1e6).toFixed(0)} M` : v >= 1e3 ? `${(v/1e3).toFixed(0)} k` : v}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div style={{ height: 24 }} />
+
+      <div className="grid-2-eq">
+        <div className="card">
+          <div className="card-head">
+            <div>
+              <div className="card-title">Rieles bancarios</div>
+              <div className="card-sub">Menciones por ofertas P2P</div>
+            </div>
+          </div>
+          <div className="card-body">
+            <HBarChart
+              data={D.paymentMethods.slice(0, 10).map(p => ({ label: p.code, value: p.mentions }))}
+              barThickness={14}
+              color="#1B2E55"
+              labelWidth={94}
+              valueFmt={v => v >= 1e3 ? `${(v/1e3).toFixed(1)}k` : v}
+            />
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-head">
+            <div>
+              <div className="card-title">Buy/Sell imbalance</div>
+              <div className="card-sub">Distribución por side</div>
+            </div>
+          </div>
+          <div className="card-body">
+            <VBarChart
+              data={[
+                { label: 'buy',  value: D.platforms.reduce((s, p) => s + p.buyOffers,  0) },
+                { label: 'sell', value: D.platforms.reduce((s, p) => s + p.sellOffers, 0) },
+              ]}
+              height={300}
+              color="#F59E0B"
+              valueFmt={v => v.toLocaleString('en-US')}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 import { BrandGlyph, Eyebrow } from './Atoms.jsx';
 
 const NAV = [
-  { id: 'overview',  label: 'Descripción general', tiers: [1,2,3] },
+  { id: 'overview',  label: 'Resumen ejecutivo',    tiers: [1,2,3] },
   { id: 'platforms', label: 'Plataformas',          tiers: [1,2,3] },
   { id: 'cryptos',   label: 'Criptoactivos',        tiers: [1,2,3] },
   { id: 'banks',     label: 'Rieles bancarios',     tiers: [1,2,3] },

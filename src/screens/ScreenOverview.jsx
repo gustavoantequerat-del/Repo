@@ -5,12 +5,9 @@ import { Tip } from '../components/Tip.jsx';
 import { BP2_GLOSSARY } from '../glossary.jsx';
 import * as D from '../data.js';
 
-const TOP_KPI_CODES = ['BBPI', 'BPX', 'PCI'];
-
 export function ScreenOverview({ tier }) {
   const cadence = tier === 1 ? 'Resumen mensual' : tier === 2 ? 'Cierre diario consolidado' : 'Cierre EOD / T+1';
   const headerIndices = D.indicesSpec.filter(i => i.tiers.includes(tier)).slice(0, 6);
-  const topKpis = TOP_KPI_CODES.map(code => D.indicesSpec.find(i => i.code === code));
 
   const platformsCap = [...D.platforms]
     .sort((a, b) => b.capacityBob - a.capacityBob)
@@ -20,7 +17,7 @@ export function ScreenOverview({ tier }) {
     <>
       <PageHead
         eyebrow={tier === 1 ? 'Panel Ejecutivo · Tier 1' : tier === 2 ? 'Panel Profesional · Tier 2' : 'Panel Regulatorio · Tier 3'}
-        title="Descripción general"
+        title="Resumen ejecutivo"
         desc="Feed de inteligencia institucional sobre el mercado P2P boliviano. Monitoreo de 13 índices propietarios BBIM con supervisión regulatoria."
         meta={[
           { label: 'Cadencia', value: cadence },
@@ -28,29 +25,6 @@ export function ScreenOverview({ tier }) {
           { label: 'Última sincronización', value: '—2 min' },
         ]}
       />
-
-      <div className="grid-3" style={{ marginBottom: 24 }}>
-        {topKpis.map(idx => (
-          <div className="card" key={idx.code}>
-            <div style={{ padding: '18px 20px 14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                <Tip text={BP2_GLOSSARY.idx[idx.code]} pos="right">
-                  <span className="eyebrow" style={{ fontSize: 10, letterSpacing: '0.08em', cursor: 'default' }}>
-                    {idx.code} · {idx.name.toUpperCase()} <span style={{ fontSize: 9, opacity: 0.6 }}>ⓘ</span>
-                  </span>
-                </Tip>
-                <RiskChip level={idx.risk} />
-              </div>
-              <div style={{ fontSize: 36, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.02em', color: 'var(--ink-1)' }}>
-                {idx.value} <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--ink-4)' }}>{idx.unit}</span>
-              </div>
-              <div style={{ marginTop: 8, fontSize: 12, color: idx.delta.startsWith('+') ? 'var(--risk-low)' : idx.delta.startsWith('−') || idx.delta.startsWith('-') ? 'var(--risk-high)' : 'var(--ink-4)' }}>
-                {idx.delta.startsWith('+') ? '▲' : idx.delta.startsWith('−') || idx.delta.startsWith('-') ? '▼' : '■'} {idx.delta.replace(/^[+−-]/, '')} vs. Mar
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <div className="grid-2">
         <div className="editorial-card">

@@ -46,7 +46,7 @@ export default function App() {
   }, [t.displayFont]);
 
   const crumbs = {
-    overview:  'Descripción general',
+    overview:  'Resumen ejecutivo',
     platforms: 'Plataformas',
     cryptos:   'Criptoactivos',
     banks:     'Rieles bancarios',

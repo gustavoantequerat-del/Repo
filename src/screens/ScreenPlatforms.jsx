@@ -109,8 +109,7 @@ export function ScreenPlatforms({ tier }) {
                 <tr>
                   <th style={{ width: 50 }}>#</th>
                   <th>Plataforma</th>
-                  <th className="col-num">Capacidad (Bs)</th>
-                  <th className="col-num tippable"><Tip text={BP2_GLOSSARY.col.share} icon>Capacity share %</Tip></th>
+                  <th className="col-num tippable"><Tip text={BP2_GLOSSARY.col.share} icon>Cuota</Tip></th>
                   <th className="col-num tippable"><Tip text={BP2_GLOSSARY.col.buy} icon>Ofertas compra</Tip></th>
                   <th className="col-num tippable"><Tip text={BP2_GLOSSARY.col.sell} icon>Ofertas venta</Tip></th>
                   <th className="col-num tippable"><Tip text={BP2_GLOSSARY.col.completion} icon>Completion</Tip></th>
@@ -128,7 +127,6 @@ export function ScreenPlatforms({ tier }) {
                         {p.name}
                       </span>
                     </td>
-                    <td className="num">{p.capacityBob >= 1e6 ? `Bs ${(p.capacityBob/1e6).toFixed(1)}M` : `Bs ${(p.capacityBob/1e3).toFixed(0)}k`}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{p.share.toFixed(1)}%</td>
                     <td className="num"><span style={{ color: 'var(--risk-low)' }}>{p.buyOffers}</span></td>
                     <td className="num"><span style={{ color: 'var(--risk-high)' }}>{p.sellOffers}</span></td>

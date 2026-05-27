@@ -5,7 +5,6 @@ import * as D from '../data.js';
 export function ScreenCryptos({ tier }) {
   const capRows = D.capacityByCrypto;
   const totalCap = capRows.reduce((s, r) => s + r.cap, 0);
-  const capByCode = Object.fromEntries(capRows.map(r => [r.code, r.cap]));
   const stableCodes = new Set(D.cryptos.filter(c => c.type === 'stable').map(c => c.code));
   const stableCap = capRows.filter(r => stableCodes.has(r.code)).reduce((s, r) => s + r.cap, 0);
   const altcoinCap = totalCap - stableCap;
@@ -92,8 +91,7 @@ export function ScreenCryptos({ tier }) {
                 <th style={{ width: 80 }}>Activo</th>
                 <th>Nombre</th>
                 <th>Tipo</th>
-                <th className="col-num">Capacidad (Bs)</th>
-                <th className="col-num">Capacity share %</th>
+                <th className="col-num">Cuota</th>
                 <th className="col-num">Δ vs. mes anterior</th>
                 <th className="col-num">Volumen 24h</th>
               </tr>
@@ -106,7 +104,6 @@ export function ScreenCryptos({ tier }) {
                     <td className="num" style={{ fontWeight: 700 }}>{c.code}</td>
                     <td>{c.name}</td>
                     <td><span className="chip-tier">{c.type === 'stable' ? 'estable' : c.type === 'crypto' ? 'volátil' : 'mixto'}</span></td>
-                    <td className="num">{capByCode[c.code] >= 1e6 ? `Bs ${(capByCode[c.code]/1e6).toFixed(2)}M` : capByCode[c.code] >= 1e3 ? `Bs ${(capByCode[c.code]/1e3).toFixed(0)}k` : '—'}</td>
                     <td className="num" style={{ fontWeight: 600 }}>{c.share.toFixed(1)}%</td>
                     <td className="num" style={{ color: delta >= 0 ? 'var(--risk-low)' : 'var(--risk-high)' }}>
                       {delta >= 0 ? '+' : ''}{delta.toFixed(1)} pp

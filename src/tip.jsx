@@ -1,0 +1,102 @@
+// Tip — hoverable explanation tooltip.
+// Usage: <Tip text="...">label</Tip>  or  <Tip text="..." icon />
+// Place inside table headers, KPI labels, badges, anything that needs context.
+
+function Tip({ text, children, icon, pos }) {
+  const trigger = icon ? (
+    <span className="tip-icon" aria-label="Más información">i</span>
+  ) : (
+    <span className="tip-trigger">{children}</span>
+  );
+  return (
+    <span className="tip" data-pos={pos} tabIndex="0">
+      {icon ? <>{children}{children && " "}{trigger}</> : trigger}
+      <span className="tip-bubble" role="tooltip">{text}</span>
+    </span>
+  );
+}
+
+window.Tip = Tip;
+
+// Centralised glossary — single source of truth for explanations.
+// Keep entries short and ground them in the BP2PIM Methodology Note.
+window.BP2_GLOSSARY = {
+  // Sidebar modules
+  nav: {
+    overview:   <>Síntesis ejecutiva del mercado P2P boliviano: KPIs de cabecera, comentario del Head of Research y top de plataformas, criptos y rails.</>,
+    platforms:  <>Ranking institucional de las plataformas P2P públicas (Binance, OKX, Bybit…). Cuota, ofertas de compra y venta, completion y spread.</>,
+    cryptos:    <>Mix de criptoactivos operando en el mercado: stablecoins (USDT, USDC, DAI…) y no-stables (BTC, ETH). Dominancia y volumen 24h.</>,
+    banks:      <>Bank Exposure Score por carril bancario. Capacidad rastreada, menciones en el flujo P2P y participación sobre el total.</>,
+    indices:    <>Suite propietaria de los 13 índices <strong>BBIM</strong>, organizada en 4 familias: precio, liquidez, estructura y cumplimiento.</>,
+    merchants:  <>Concentración (MCI), capacidad observada y perfil de riesgo (MRP) por operador.</>,
+    alerts:     <>Sistema de alertas configurables sobre los 13 índices. Crea reglas con umbrales y operadores (&gt;, &lt;, ≥, ≤).</>,
+    scenarios:  <>Simulación determinística de sensibilidad del mercado: shocks de FX, retiro de stablecoins y restricciones regulatorias.</>,
+    reports:    <>Repositorio cronológico de reportes descargables en PDF: Executive (mensual), Analytical (quincenal), Regulatory (bajo solicitud).</>,
+  },
+
+  // Tiers
+  tier: {
+    1: <><strong>Tier 1 — Executive.</strong> Dashboard mensual + PDF ejecutivo. Vista simplificada para directorios y stakeholders. Sin descarga de datos.</>,
+    2: <><strong>Tier 2 — Professional.</strong> Dashboard diario + API. Suite completa de 13 índices, alertas, proyecciones y repositorio histórico. Equipos de riesgo y compliance.</>,
+    3: <><strong>Tier 3 — Regulator.</strong> Plataforma continua EOD/T+1. Capa de entidades nombradas, monitoreo de stablecoin flow y escenarios. Para ASFI, BCB, UIF.</>,
+  },
+
+  // Indices (use code as key)
+  idx: {
+    "BBPI":     <><strong>BBPI</strong> — Benchmark del precio P2P consolidado BOB/USDT y BOB/USDC. Es el índice principal de referencia institucional.</>,
+    "BPX":      <><strong>BPX</strong> — Prima del mercado P2P sobre la referencia oficial. Mide cuánto se aleja el P2P del tipo de cambio oficial.</>,
+    "BBPI-ALT": <><strong>BBPI-ALT</strong> — Benchmark para criptoactivos alternativos (BTC, ETH y altcoins). No incluye stablecoins.</>,
+    "LDI":      <><strong>LDI · Liquidity Depth Index</strong> — Profundidad visible del libro de órdenes. A menor LDI, mercado menos líquido.</>,
+    "VEI":      <><strong>VEI · Volume Estimation Index</strong> — Estimación proxy del volumen diario en USD operado por el mercado.</>,
+    "VPR":      <><strong>VPR · Variation of Posted Capacity</strong> — Ratio de variación de la capacidad observada. Mide rotación de oferta.</>,
+    "PCI":      <><strong>PCI · Platform Concentration Index</strong> — HHI calculado por plataforma. Cuanto más alto, más concentrado el mercado.</>,
+    "MCI":      <><strong>MCI · Merchant Concentration Index</strong> — HHI calculado por operador. Indica si pocos merchants dominan el volumen.</>,
+    "BSI":      <><strong>BSI · Buy/Sell Imbalance</strong> — Desbalance entre órdenes de compra y venta del libro consolidado.</>,
+    "BES":      <><strong>BES · Bank Exposure Score</strong> — Score de exposición agregada por rail bancario al flujo P2P observado.</>,
+    "MRP":      <><strong>MRP · Merchant Risk Profile</strong> — Score 0-100 de riesgo por operador, basado en patrón de actividad y rails.</>,
+    "SDR":      <><strong>SDR · Stablecoin Dominance Ratio</strong> — Porcentaje del volumen total que está en stablecoins (vs. otras criptos).</>,
+    "CRI":      <><strong>CRI · Compliance Readiness Index</strong> — Carga regulatoria y disposición observada del mercado. Nuevo índice de la familia de Cumplimiento.</>,
+  },
+
+  // Risk levels
+  risk: {
+    low:  <><strong>Riesgo bajo.</strong> El indicador está dentro de la banda institucional definida en la Methodology Note.</>,
+    med:  <><strong>Riesgo medio.</strong> El indicador se acerca al umbral superior. Recomendado monitoreo activo.</>,
+    high: <><strong>Riesgo alto.</strong> El indicador se sitúa fuera de la banda institucional. Requiere revisión cualitativa.</>,
+  },
+
+  // Generic columns / values
+  col: {
+    share:         <>Cuota de mercado de la plataforma sobre el total observado en el snapshot.</>,
+    buy:           <>Número de ofertas de compra publicadas en las últimas 24 horas. No es volumen monetario.</>,
+    sell:          <>Número de ofertas de venta publicadas en las últimas 24 horas. No es volumen monetario.</>,
+    completion:    <>Tasa de cierre exitoso de las órdenes publicadas. Mide la confiabilidad operativa de la plataforma.</>,
+    spread:        <>Spread medio observado entre el mejor bid y el mejor ask en el libro consolidado.</>,
+    capacity:      <>Capacidad nominal observada del operador o rail en bolivianos. No equivale a volumen ejecutado.</>,
+    mentionShare:  <>Porcentaje de menciones del rail bancario sobre el total de menciones detectadas en el flujo P2P normalizado.</>,
+    capacityShare: <>Porcentaje de capacidad observada del rail bancario sobre la capacidad total agregada del mercado.</>,
+    mentions:      <>Conteo absoluto de menciones del rail detectadas en el flujo P2P del último período.</>,
+    exposure:      <>BES — score 0-1 que mide la exposición agregada del rail al flujo P2P observado.</>,
+    mrp:           <>MRP del operador — score 0-100 basado en patrón de actividad, rails usados y señales de cluster.</>,
+    rails:         <>Rails bancarios o métodos de pago asociados al operador.</>,
+    status:        <>Estado operativo del operador en el snapshot actual: activo, en revisión o marcado por compliance.</>,
+    delta24:       <>Variación del valor en las últimas 24 horas.</>,
+    deltaM:        <>Variación del valor respecto al snapshot del mes anterior.</>,
+    trend12:       <>Tendencia de la serie temporal en los últimos 12 meses.</>,
+    threshold:     <>Umbral institucional definido en la Methodology Note. Cruzarlo dispara una alerta del sistema.</>,
+    type:          <>Tipo del activo: stablecoin, criptomoneda volátil o mixto.</>,
+    operator:      <>Operador lógico de la regla: mayor que (&gt;), menor que (&lt;), o sus variantes con igualdad.</>,
+    severity:      <>Severidad asignada a la alerta cuando la regla se dispare: baja, media o alta.</>,
+    scope:         <>Niveles de acceso desde los cuales se puede ver la regla y sus alertas asociadas.</>,
+  },
+
+  // KPI / page-level labels
+  kpi: {
+    activePlatforms: <>Número de plataformas P2P observadas activamente en el snapshot actual.</>,
+    avgSpread:       <>Spread medio ponderado entre el bid y el ask en el libro consolidado de todas las plataformas.</>,
+    top5:            <>Cuota acumulada de los 5 operadores con mayor capacidad observada. Indicador clásico de concentración.</>,
+    avgMrp:          <>MRP promedio del universo total de operadores rastreados.</>,
+    flagged:         <>Operadores marcados por compliance como pendientes de revisión o sospechosos.</>,
+    rules:           <>Reglas de alertamiento configuradas, activas o pausadas. Cada regla evalúa un índice contra un umbral.</>,
+  },
+};

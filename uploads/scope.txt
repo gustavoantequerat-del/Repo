@@ -1,0 +1,172 @@
+
+
+[P]Blockfinity Advisors
+[P]Research &amp; Market Intelligence
+[P]
+[P]BP2PIM — MVP Scope v1
+[P]Bolivia P2P Intelligence Monitor
+[P]
+[P]Clasificación
+[P]Confidencial — uso interno
+[P]Versión
+[P]v1.0
+[P]Fecha
+[P]07 de mayo de 2026
+[P]Estado
+[P]Documento de alcance del MVP
+[P]
+[P]Documento interno para revisión ejecutiva
+[P]Preparado para la validación del alcance funcional, arquitectónico y operativo del producto.
+[P]
+[P]Índice
+[P]1. Resumen ejecutivo
+[P]2. Objetivo y alcance del MVP
+[P]3. Arquitectura funcional y definición por tier
+[P]4. Suite de índices propietarios del MVP
+[P]5. Módulos iniciales y lógica de navegación
+[P]6. Lógica de visualización y consumo institucional
+[P]7. Dependencias de datos y operación
+[P]8. Fuera de alcance para fases posteriores
+[P]9. Consideraciones operativas
+[P]
+[P]1. Resumen ejecutivo
+[P]BP2PIM (Bolivia P2P Intelligence Monitor) es la primera versión operativa de un producto institucional de inteligencia sobre el mercado P2P de activos virtuales en Bolivia. El MVP v1 consolida la arquitectura ya desarrollada en la plataforma, ordena sus módulos por tier y define una primera entrega comercialmente vendible, metodológicamente defendible y operativamente sostenible.
+[P]Este documento no redefine la visión estratégica de largo plazo; establece el alcance real de la versión inicial del producto. En esta versión, el MVP incluye los 13 índices propietarios aprobados en la arquitectura vigente, tres niveles de consumo claramente diferenciados y una lógica de visualización orientada a consumo ejecutivo, analítico y regulatorio.
+[P]La prioridad de esta versión es convertir una arquitectura preliminar en un producto coherente: con jerarquía de información clara, módulos consistentes, visualizaciones entendibles por tipo de usuario y una base metodológica suficiente para revisión interna y validación ejecutiva.
+[P]2. Objetivo y alcance del MVP
+[P]Objetivo general: Diseñar y consolidar la primera versión operativa de BP2PIM como plataforma de inteligencia institucional sobre el mercado P2P, con entrega diferenciada por niveles de usuario y un marco metodológico común.
+[P]Criterio de alcance: En el MVP v1 entran los componentes necesarios para que el producto pueda ser consumido, entendido y validado a nivel ejecutivo, analítico y regulatorio. Quedan fuera, por diseño, las capacidades avanzadas que elevan la complejidad operativa sin ser indispensables para la primera versión comercial.
+[P]Elemento
+[P]Incluido en MVP
+[P]Forma de consumo
+[P]Notas
+[P]Tier 1
+[P]Sí
+[P]Dashboard mensual + PDF ejecutivo
+[P]Sin descarga de datos
+[P]Tier 2
+[P]Sí
+[P]Dashboard diario +API
+[P]Con acceso histórico y descarga
+[P]Tier 3
+[P]Sí
+[P]Plataforma continua EOD / T+1
+[P]Capa regulatoria avanzada
+[P]13 índices
+[P]Sí
+[P]Incluidos en la suite propietaria
+[P]Con metodología común
+[P]
+[P]EOD (End of Day) se refiere a la consolidación y publicación de datos al cierre de la jornada: la información del mercado se captura durante el día, se procesa de forma completa y se publica una vez finalizado el día, sin actualizaciones en tiempo real. T+1 (Time plus one day) indica que los datos de un día determinado se publican con un desfase de un día hábil adicional, es decir, se entregan al día siguiente ya procesados.
+[P]En conjunto, EOD/T+1 feed describe un flujo estructurado de datos no en tiempo real, sino consolidado y validado, que se entrega al cierre del día o al día siguiente, incorporando procesamiento, control de calidad y enriquecimiento analítico antes de su publicación.
+[P]
+[P]
+[P]3. Arquitectura funcional y definición por tier
+[P]Tier 1 - Executive Dashboard
+[P]Formato: dashboard web mensual + PDF ejecutivo.
+[P]Audiencia: directorios bancarios, CEOs, supervisores y stakeholders institucionales.
+[P]Contenido: plataformas, monedas/criptoactivos, merchants, bancos/rails, BBPI, BPX con variación mensual y comentario editorial firmado por Head of Research.
+[P]Características: vista simplificada, sin descarga de datos, sin repositorio histórico completo y con foco narrativo y ejecutivo.
+[P]Tier 2 - Professional Dashboard
+[P]Formato: dashboard web diario+ API limitado a 50 peticiones.
+[P]Audiencia: equipos de riesgo, compliance officers, research teams e instituciones financieras.
+[P]Contenido: todo Tier 1, suite completa de las series temporales de los 13 índices, alertas, proyecciones , repositorio histórico y boletín editorial quincenal.
+[P]Características: capacidad de descarga, navegación analítica expandida y consumo institucional de mayor profundidad.
+[P]Nota: el chat con el equipo de Research no forma parte del MVP v1.
+[P]Tier 3 - Regulator Platform
+[P]Formato: plataforma continua EOD / T+1 con capa de entidades nombradas. También incluye API mayor a 50 peticiones.
+[P]Audiencia: ASFI, BCB, UIF y equipos regulatorios o investigativos.
+[P]Contenido: todo Tier 1 y Tier 2; monitoreo de Riesgo: perfil de Riesgo de comerciantes/transacción; stablecoin flow monitor y escenarios.
+[P]Características: monitoreo diario y lectura regulatoria más profunda.
+[P]4. Suite de índices propietarios del MVP
+[P]El MVP v1 incorpora una suite de 12 índices propietarios. La definición metodológica detallada de cada uno se desarrolla en la Methodology Note v1, pero la arquitectura de producto los considera parte del núcleo operativo desde la primera versión.
+[P]Índice
+[P]Propósito
+[P]Visibilidad por tier
+[P]BBPI
+[P]Benchmark principal del precio P2P BOB/USDT y BOB/USDC
+[P]Tier 1, Tier 2, Tier 3
+[P]BPX
+[P]Prima del mercado P2P sobre la referencia oficial
+[P]Tier 1, Tier 2, Tier 3
+[P]BBPI-ALT
+[P]Benchmark de precios para criptoactivos alternativos
+[P]Tier 2, Tier 3
+[P]LDI
+[P]Profundidad visible de liquidez
+[P]Tier 2, Tier 3
+[P]VEI
+[P]Estimación de volumen proxy
+[P]Tier 2, Tier 3
+[P]VPR
+[P]Ratio de variación de capacidad observada
+[P]Tier 2, Tier 3
+[P]PCI
+[P]Concentración por plataforma
+[P]Tier 2, Tier 3
+[P]MCI
+[P]Concentración por merchant
+[P]Tier 2, Tier 3
+[P]BSI
+[P]Desbalance buy/sell
+[P]Tier 2, Tier 3
+[P]BES
+[P]Exposure score por banco
+[P]Tier 2, Tier 3
+[P]MRP
+[P]Perfil de riesgo por merchant
+[P]Tier 2, Tier 3
+[P]SDR
+[P]Dominancia de stablecoins
+[P]Tier 1, Tier 2, Tier 3
+[P]5. Módulos iniciales y lógica de navegación
+[P]La plataforma se organiza por módulos funcionales para evitar una lectura fragmentada y facilitar el consumo según la necesidad de cada tier.
+[P]Mercado P2P: visión de conjunto del mercado, plataformas, monedas y actividad agregada.
+[P]Índices: visualización de la suite propietaria y su evolución temporal.
+[P]Merchants: lectura de concentración, capacidad y riesgo por operador.
+[P]Banks / Rails: exposición por carril bancario, menciones y capacidad asociada.
+[P]Stablecoins: dominancia, preferencias y cambios en la estructura del mercado.
+[P]Escenarios: simulaciones ejecutivas para sensibilidad del BPX, liquidez y stablecoins.
+[P]Alertas: señales básicas de cambio relevante en capacidad, exposición o concentración.
+[P]Repositorio histórico: acceso a series y trazabilidad analítica en Tier 2 y Tier 3.
+[P]Named entity overlay: capa de entidades nombradas y enriquecimiento operativo para Tier 3.
+[P]6. Lógica de visualización y consumo institucional
+[P]La visualización del producto debe obedecer a la lógica de consumo por usuario. Tier 1 privilegia síntesis ejecutiva; Tier 2, lectura analítica; y Tier 3, monitoreo y revisión regulatoria.
+[P]Tier
+[P]Lógica visual
+[P]Capacidades clave
+[P]Tier 1
+[P]Vista ejecutiva y narrativa
+[P]Resumen, ranking básico, variación mensual, comentario editorial
+[P]Tier 2
+[P]Serie temporal y desglose analítico
+[P]Descarga, histórico, alertas básicas, proyecciones básicas
+[P]Tier 3
+[P]Lectura operativa y regulatoria
+[P]Named entities, risk monitoring, escenarios, workflow básico
+[P]Nota. El lenguaje visual debe ser institucional y limpio. La meta no es producir un dashboard de estilo cripto-native, sino una interfaz de inteligencia de mercado apta para directorios, áreas de riesgo y supervisión.
+[P]7. Dependencias de datos y operación
+[P]Flujo de datos base de Crystal Intelligence para la captura y normalización del mercado P2P.
+[P]Mapeo de bancos y rails de pago asociados a las ofertas observadas.
+[P]Repositorio histórico para series temporales y trazabilidad de cálculo.
+[P]Referencia oficial para la construcción del BPX y su lectura comparativa.
+[P]Capa de validación interna para consistencia entre la plataforma, el workbook y la metodología.
+[P]Enriquecimiento por wallet clusters y named entities en la capa regulatoria.
+[P]8. Fuera de alcance para fases posteriores
+[P]El MVP v1 se enfoca en la primera versión operativa del producto. Las siguientes capacidades quedan fuera de alcance para preservar foco, credibilidad metodológica y viabilidad operativa.
+[P]Chat operativo con el equipo de Research.
+[P]Machine learning avanzado y modelos predictivos complejos.
+[P]Detección automatizada sofisticada de anomalías o cambios de régimen.
+[P]Integración multi-chain profunda.
+[P]Benchmarking regional LATAM o comparativos cross-country.
+[P]Dashboards completamente customizables por cliente.
+[P]Automatización enterprise completa en tiempo real.
+[P]Análisis de concentración avanzado como módulo separado de investigación.
+[P]Reglas avanzadas de alertamiento inteligente y workflows automatizados completos.
+[P]9. Consideraciones operativas
+[P]La publicación del producto debe seguir una cadencia clara y previsible.
+[P]La metodología debe quedar documentada de forma simple, reproducible y defendible.
+[P]La arquitectura de producto debe sostener el crecimiento sin perder legibilidad institucional.
+[P]Las decisiones de visualización deben priorizar claridad ejecutiva por encima de complejidad innecesaria.
+[P]La primera versión del producto debe validarse internamente antes de escalarse comercialmente.
+[P]

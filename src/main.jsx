@@ -1,6 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
-import './tokens.css';
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+import '../tokens.css';
+import './data.jsx';
+import './tip.jsx';
+import './chart.jsx';
+import './atoms.jsx';
+import './shell.jsx';
+import './screens-overview.jsx';
+import './screens-markets.jsx';
+import './screens-risk.jsx';
+import '../tweaks-panel.jsx';
+import './app.jsx';

@@ -1,0 +1,85 @@
+﻿
+[P]
+[P]Mejorar el orden de esta manera:
+[P]Overview, Platforms, Cryptocurrencies, Banking Rails, Indices, Merchants, Reports
+[P]Platforms 
+[P] 
+[P]En vez de estos gráficos mantener los de la plataforma 
+[P]Mantener Buy y Sell como ofertas y no en millones, esto está bien
+[P]
+[P] 
+[P]Quitar esto:
+[P]
+[P]Cryptocurrencies
+[P]Se ve borrosa esta parte mejor cambiar por la que hay en la plataforma: 
+[P]Por esta
+[P]
+[P]
+[P]
+[P]Quitar esto: 
+[P]Banking Rails
+[P]Mantener esto en la primera parte  y esto que aparezca solo para el tier 2 (me avisas si se puede) y después de capacidad agregar Mention share (%) y otra columna de Capacity share (%)
+[P]Luego quitar esto 
+[P]
+[P]
+[P]Quitar esto: 
+[P]
+[P]Indices
+[P]4.1 Tier 1
+[P]Tienen que ir 2 índices: El BBPI y BPX. Agregar los 2 índices más su variación mensual y quitar Descargar histórico porque eso forma parte del Tier 2
+[P]
+[P]Quitar esto:
+[P]Quitar esto:Quitar esto:
+[P]
+[P]4.2 Tier 2
+[P]Quitar esto:La familia de índices de Precio y prima solo incluye estos indices BBPI, BPX Y BBPI-ALT, por lo que se debe quitar VPR Y PCI de la presentación La familia de índices de Liquidez y profundidad de mercado tiene igual incluye los siguientes índices, LDI, VEI y VPR, corregir también: La familia de índices de estructura y concentración incluye PCI, MCI y BSI, corregir también
+[P]Y agregar la familia de índices de Cumplimiento y riesgo sistémico que son el BES, MRP, SDR, y CRI
+[P]Que puedan aparecer los 13 indices, solo aparece 5: Al final agregar estas alertas tal cual
+[P]
+[P]Quitar esto: 
+[P]Merchants
+[P]Quitar esto:Pero mantener el Merchant risk profile
+[P]En vez de mantener estoMejor mantener la versión inicial:
+[P]
+[P]Quitar todo esto:
+[P]
+[P]Reports
+[P]Reports Module — Design Logic
+[P]La pestaña “Reports” funcionará como un repositorio institucional de reportes descargables en PDF.
+[P]La lógica no es solo exportar vistas del dashboard, sino centralizar los entregables periódicos asociados a cada tier del producto. Todos los reportes deben poder visualizarse y descargarse desde esta sección.
+[P]Tier Logic
+[P]Tier
+[P]Tipo de reporte
+[P]Frecuencia
+[P]Descarga
+[P]Tier 1
+[P]Executive Report
+[P]Mensual
+[P]Sí
+[P]Tier 2
+[P]Analytical Report
+[P]Quincenal
+[P]Sí
+[P]Tier 3
+[P]Regulatory / Risk Report
+[P]Bajo solicitud
+[P]Sí
+[P]Diseño esperado
+[P]Los reportes deben acumularse cronológicamente dentro de la misma sección. 
+[P]Cada reporte debe mostrarse como una card o fila descargable. 
+[P]Debe visualizarse: 
+[P]nombre del reporte 
+[P]tier asociado 
+[P]período 
+[P]fecha de publicación 
+[P]botón de descarga PDF 
+[P]Ejemplos visuales
+[P]Executive Market Brief — April 2026 
+[P]Analytical Market Report — Week 18 2026 
+[P]Regulatory Risk Brief — April 2026 
+[P]Objetivo del módulo
+[P]Construir un historial institucional de reporting dentro de BP2PIM, permitiendo trazabilidad, consulta histórica y acceso organizado a los entregables periódicos del sistema.
+[P]
+[P]
+[P]
+[P]

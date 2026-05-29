@@ -1,9 +1,9 @@
 // Screens — Alerts (with configurable rules), Scenarios, Reports
-const { PageHead, LockedHint, KpiStrip, Tip, RiskChip, Eyebrow } = window;
+const { PageHead, LockedHint, KpiStrip, Tip, RiskChip, Eyebrow, RangeBar } = window;
 const { useState: useS3, useMemo: useMemoR, useEffect: useEffectR } = React;
 
 // =================== ALERTS ===================
-function ScreenAlerts({ tier, rules, setRules, alerts, setAlerts }) {
+function ScreenAlerts({ tier, rules, setRules, alerts, setAlerts, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
   const [tab, setTab] = useS3("active");
   const [draft, setDraft] = useS3({ indexCode: "BPX", operator: ">", threshold: 9.0, severity: "high", module: "Indices" });
@@ -61,7 +61,10 @@ function ScreenAlerts({ tier, rules, setRules, alerts, setAlerts }) {
     setRules(rules.filter(r => r.id !== id));
   }
 
-  const filtered = alerts.filter(a => a.tier <= tier);
+  const accessibleAlerts = alerts.filter(a => a.tier <= tier);
+  const filtered = range === "7d" ? accessibleAlerts.slice(0, 3)
+                 : range === "30d" ? accessibleAlerts.slice(0, 5)
+                 : accessibleAlerts;
   const counts = {
     high: filtered.filter(a => a.level === "high").length,
     med:  filtered.filter(a => a.level === "med").length,
@@ -82,6 +85,7 @@ function ScreenAlerts({ tier, rules, setRules, alerts, setAlerts }) {
           { label: "Cadencia", value: tier === 2 ? "Diaria" : "EOD / T+1" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       <KpiStrip items={[
         { label: "Severidad alta",     value: counts.high, delta: "+1", deltaNote: "vs. ayer", risk: "high", tip: "Alertas con severidad alta. Indicador más prioritario para revisión inmediata." },
@@ -422,12 +426,12 @@ function ProjMetric({ label, base, proj }) {
 }
 
 // =================== REPORTES ===================
-function ScreenReports({ tier }) {
+function ScreenReports({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
   const [filter, setFilter] = useS3("all");
   const accessible = r => r.tier <= tier;
   // Filter tabs match the translated type values
-  const filtered = D.reports.filter(r => {
+  const reportsForTier = D.reports.filter(r => {
     if (!accessible(r)) return false;
     if (filter === "all") return true;
     if (filter === "executive") return r.type === "Ejecutivo";
@@ -435,6 +439,9 @@ function ScreenReports({ tier }) {
     if (filter === "regulatory") return r.type === "Regulatorio";
     return true;
   });
+  const filtered = range === "7d" ? reportsForTier.slice(0, 1)
+                 : range === "30d" ? reportsForTier.slice(0, 3)
+                 : reportsForTier;
 
   return (
     <>
@@ -448,6 +455,7 @@ function ScreenReports({ tier }) {
           { label: "Formato", value: "PDF" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       <div className="grid-3" style={{ marginBottom: 24 }}>
         <div className="card" style={{ padding: 20, background: tier >= 1 ? "var(--surface)" : "var(--surface-2)", opacity: tier >= 1 ? 1 : 0.55 }}>

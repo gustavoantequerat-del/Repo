@@ -20,6 +20,7 @@ function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [route, setRoute] = useStateApp("overview");
   const [tier, setTier]   = useStateApp(t.tierAtStart);
+  const [metricRange, setMetricRange] = useStateApp("12m");
 
   // Persisted alert rules + queue (shared between screens + sidebar badge)
   const D = window.BP2_DATA;
@@ -62,16 +63,17 @@ function App() {
   const accessibleAlertCount = alerts.filter(a => a.tier <= tier).length;
 
   let Screen = null;
+  const rangeProps = { range: metricRange, setRange: setMetricRange };
   switch (route) {
-    case "overview":   Screen = <ScreenOverview tier={tier} />; break;
-    case "platforms":  Screen = <ScreenPlatforms tier={tier} />; break;
-    case "cryptos":    Screen = <ScreenCryptos tier={tier} />; break;
-    case "banks":      Screen = <ScreenBanks tier={tier} />; break;
-    case "indices":    Screen = <ScreenIndices tier={tier} />; break;
-    case "merchants":  Screen = <ScreenMerchants tier={tier} />; break;
-    case "alerts":     Screen = <ScreenAlerts tier={tier} rules={rules} setRules={setRules} alerts={alerts} setAlerts={setAlerts} />; break;
-    case "reports":    Screen = <ScreenReports tier={tier} />; break;
-    default: Screen = <ScreenOverview tier={tier} />;
+    case "overview":   Screen = <ScreenOverview tier={tier} {...rangeProps} />; break;
+    case "platforms":  Screen = <ScreenPlatforms tier={tier} {...rangeProps} />; break;
+    case "cryptos":    Screen = <ScreenCryptos tier={tier} {...rangeProps} />; break;
+    case "banks":      Screen = <ScreenBanks tier={tier} {...rangeProps} />; break;
+    case "indices":    Screen = <ScreenIndices tier={tier} {...rangeProps} />; break;
+    case "merchants":  Screen = <ScreenMerchants tier={tier} {...rangeProps} />; break;
+    case "alerts":     Screen = <ScreenAlerts tier={tier} rules={rules} setRules={setRules} alerts={alerts} setAlerts={setAlerts} {...rangeProps} />; break;
+    case "reports":    Screen = <ScreenReports tier={tier} {...rangeProps} />; break;
+    default: Screen = <ScreenOverview tier={tier} {...rangeProps} />;
   }
 
   return (

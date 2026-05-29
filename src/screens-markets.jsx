@@ -2,17 +2,60 @@
 const {
   PageHead, LockedHint, KpiStrip, Tip, InteractiveChart, Delta,
   RiskChip, fmtUsd, fmtNum, FamilyHead, Spark, Eyebrow,
+  RangeBar,
 } = window;
 const { useState: useS2 } = React;
 
+const INDEX_RANGE_OPTIONS = [
+  { id: "7d", label: "7D" },
+  { id: "30d", label: "30D" },
+  { id: "12m", label: "12M" },
+];
+
+function roundMetric(v) {
+  if (Math.abs(v) >= 100) return Number(v.toFixed(1));
+  if (Math.abs(v) >= 10) return Number(v.toFixed(2));
+  return Number(v.toFixed(3));
+}
+
+function metricRange(monthly, monthLabels, range) {
+  if (!monthly || monthly.length === 0) return { data: [], labels: [] };
+  if (range === "12m") return { data: monthly, labels: monthLabels };
+
+  const days = range === "30d" ? 30 : 7;
+  const last = monthly[monthly.length - 1];
+  const prev = monthly[monthly.length - 2] ?? last;
+  const span = last - prev;
+  const wobbleBase = Math.max(Math.abs(span), Math.abs(last) * 0.004, 0.01);
+  const data = Array.from({ length: days }, (_, i) => {
+    const t = days === 1 ? 1 : i / (days - 1);
+    const wobble = Math.sin((i + 1) * 1.35) * wobbleBase * 0.12;
+    return roundMetric(prev + span * t + wobble);
+  });
+  data[data.length - 1] = roundMetric(last);
+
+  const labels = Array.from({ length: days }, (_, i) => {
+    const remaining = days - i - 1;
+    return remaining === 0 ? "Hoy" : `D-${remaining}`;
+  });
+
+  return { data, labels };
+}
+
 // =================== RIELES BANCARIOS ===================
-function ScreenBanks({ tier }) {
+function ScreenBanks({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
+  const activeRange = tier >= 2 ? range : "12m";
   const trendChar = t => t === "up" ? "▲" : t === "down" ? "▼" : "■";
   const trendCls  = t => t === "up" ? "delta-up" : t === "down" ? "delta-dn" : "delta-flat";
 
   // Top 7 rails — orden por exposición
-  const ranked = [...D.banks].sort((a, b) => b.exposure - a.exposure);
+  const ranked = [...D.banks].sort((a, b) => b.exposure - a.exposure).map((b, i) => ({
+    ...b,
+    capacity: window.scaleMetricValue(b.capacity, activeRange, i + 1),
+    mentions: window.scaleMetricValue(b.mentions, activeRange, i + 2),
+  }));
+  const besRange = metricRange(D.series.BES, D.monthsLabels, activeRange);
 
   // =========== Tier 1: vista AGREGADA ===========
   if (tier === 1) {
@@ -88,6 +131,7 @@ function ScreenBanks({ tier }) {
           { label: "Capacidad total", value: "$18.5 M" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       <KpiStrip items={[
         { label: "BES agregado",        value: "0.52",    delta: "+0.03",  deltaNote: "vs. Mar", risk: "med", tip: window.BP2_GLOSSARY.idx.BES },
@@ -178,7 +222,7 @@ function ScreenBanks({ tier }) {
           </div>
         </div>
         <div className="card-body">
-          <InteractiveChart data={D.series.BES} labels={D.monthsLabels} unit="score" height={240} showThreshold={0.70} />
+          <InteractiveChart data={besRange.data} labels={besRange.labels} unit="score" height={240} showThreshold={0.70} />
         </div>
       </div>
     </>
@@ -186,12 +230,12 @@ function ScreenBanks({ tier }) {
 }
 
 // =================== ÍNDICES ===================
-function ScreenIndices({ tier }) {
+function ScreenIndices({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
   const [selectedCode, setSelectedCode] = useS2("BPX");
-  const [range, setRange] = useS2("12m");
   const selected = D.indicesSpec.find(i => i.code === selectedCode) || D.indicesSpec[0];
-  const seriesData = D.series[selected.code] || [];
+  const selectedRange = metricRange(D.series[selected.code] || [], D.monthsLabels, range);
+  const rangeLabel = INDEX_RANGE_OPTIONS.find(r => r.id === range)?.label || "12M";
 
   const visibleFamilies = tier === 3
     ? D.indexFamilies
@@ -296,17 +340,14 @@ function ScreenIndices({ tier }) {
               </div>
             </div>
           </div>
-          {/* T3 puede seleccionar rango temporal; T2 no */}
-          {tier === 3 && (
-            <div className="tier-switch">
-              {["7d", "30d", "12m"].map(r => (
-                <button key={r} data-on={range === r} onClick={() => setRange(r)}>{r}</button>
-              ))}
-            </div>
-          )}
+          <div className="tier-switch" role="tablist" aria-label="Rango temporal">
+            {INDEX_RANGE_OPTIONS.map(r => (
+              <button key={r.id} data-on={range === r.id} onClick={() => setRange(r.id)}>{r.label}</button>
+            ))}
+          </div>
         </div>
         <div className="card-body">
-          <InteractiveChart data={seriesData} labels={D.monthsLabels} unit={selected.unit} height={260}
+          <InteractiveChart data={selectedRange.data} labels={selectedRange.labels} unit={selected.unit} height={260}
                             showThreshold={selected.threshold} />
           <p style={{ marginTop: 12, fontSize: 12, color: "var(--ink-4)" }}>
             {selected.purpose}. Familia: {D.indexFamilies.find(f => f.id === selected.family).name}.
@@ -332,7 +373,7 @@ function ScreenIndices({ tier }) {
                     <th className="col-num tippable"><Tip text={window.BP2_GLOSSARY.col.delta24} icon>Δ 24h</Tip></th>
                     <th className="col-num tippable"><Tip text={window.BP2_GLOSSARY.col.deltaM} icon>Δ mensual</Tip></th>
                     <th style={{ width: 90 }}>Riesgo</th>
-                    <th style={{ width: 100 }} className="col-num tippable"><Tip text={window.BP2_GLOSSARY.col.trend12} icon>Tend. 12m</Tip></th>
+                    <th style={{ width: 100 }} className="col-num tippable"><Tip text={window.BP2_GLOSSARY.col.trend12} icon>Tend. {rangeLabel}</Tip></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -352,7 +393,7 @@ function ScreenIndices({ tier }) {
                         <td className="num">{accessible ? <Delta value={idx.delta} /> : "—"}</td>
                         <td className="num">{accessible ? <Delta value={idx.deltaM} /> : "—"}</td>
                         <td>{accessible ? <RiskChip level={idx.risk} /> : <span className="chip-tier">T{Math.min(...idx.tiers)}+</span>}</td>
-                        <td style={{ textAlign: "right" }}>{accessible && D.series[idx.code] ? <Spark data={D.series[idx.code]} w={90} h={22} stroke="var(--accent)" /> : "—"}</td>
+                        <td style={{ textAlign: "right" }}>{accessible && D.series[idx.code] ? <Spark data={metricRange(D.series[idx.code], D.monthsLabels, range).data} w={90} h={22} stroke="var(--accent)" /> : "—"}</td>
                       </tr>
                     );
                   })}
@@ -367,8 +408,9 @@ function ScreenIndices({ tier }) {
 }
 
 // =================== COMERCIANTES ===================
-function ScreenMerchants({ tier }) {
+function ScreenMerchants({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
+  const activeRange = tier >= 2 ? range : "12m";
   if (tier < 2) {
     return (
       <>
@@ -392,6 +434,12 @@ function ScreenMerchants({ tier }) {
     { label: "Operadores marcados",   value: "3",      delta: "+1",      deltaNote: "nuevo flag", risk: "high", tip: window.BP2_GLOSSARY.kpi.flagged },
   ];
 
+  const merchantRows = D.merchants.map((m, i) => ({
+    ...m,
+    capacity: window.scaleMetricValue(m.capacity, activeRange, i + 1),
+  }));
+  const mciRange = metricRange(D.series.MCI, D.monthsLabels, activeRange);
+
   return (
     <>
       <PageHead
@@ -406,6 +454,7 @@ function ScreenMerchants({ tier }) {
           { label: "Capacidad agregada", value: "$14.8 M" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       <KpiStrip items={tier === 3 ? kpisT3 : kpisCommon} />
 
@@ -432,7 +481,7 @@ function ScreenMerchants({ tier }) {
             </tr>
           </thead>
           <tbody>
-            {D.merchants.map(m => (
+            {merchantRows.map(m => (
               <tr key={m.id}>
                 <td className="num" style={{ color: "var(--ink-4)" }}>{m.id}</td>
                 <td style={{ fontWeight: 500 }}>{m.alias}</td>
@@ -479,7 +528,7 @@ function ScreenMerchants({ tier }) {
           </div>
         </div>
         <div className="card-body">
-          <InteractiveChart data={D.series.MCI} labels={D.monthsLabels} unit="HHI" height={220} showThreshold={0.45} />
+          <InteractiveChart data={mciRange.data} labels={mciRange.labels} unit="HHI" height={220} showThreshold={0.45} />
         </div>
       </div>
     </>

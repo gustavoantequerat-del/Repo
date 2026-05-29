@@ -681,6 +681,13 @@ table.t .num, table.t td.num { text-align: right; }
 /* generic rows */
 .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .cluster { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.range-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: -6px 0 24px;
+}
 
 /* family group header */
 .family-head {

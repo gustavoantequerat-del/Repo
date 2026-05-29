@@ -1,13 +1,14 @@
 // Screens — Overview, Platforms, Cryptocurrencies
 const {
   PageHead, Eyebrow, Tip, Spark, HBarChart, VBarChart, DonutChart,
-  KpiStrip, RiskChip, Delta,
+  KpiStrip, RiskChip, Delta, RangeBar, metricRange, scaleMetricData,
 } = window;
 const { useState: useS1 } = React;
 
 // =================== OVERVIEW (Descripción general) ===================
-function ScreenOverview({ tier }) {
+function ScreenOverview({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
+  const activeRange = tier >= 2 ? range : "12m";
   const cadence = tier === 1 ? "Resumen mensual" : tier === 2 ? "Cierre diario consolidado" : "Cierre EOD / T+1";
   const headerIndices = D.indicesSpec.filter(i => i.tiers.includes(tier)).slice(0, 6);
 
@@ -15,6 +16,13 @@ function ScreenOverview({ tier }) {
   const platformsCap = [...D.platforms]
     .sort((a, b) => b.capacityBob - a.capacityBob)
     .map(p => ({ label: p.name.replace(" P2P", ""), value: p.capacityBob }));
+  const rangedPlatformsCap = scaleMetricData(platformsCap, activeRange);
+  const rangedCapacityByCrypto = scaleMetricData(D.capacityByCrypto.map(c => ({ label: c.code, value: c.cap })), activeRange);
+  const rangedPaymentMethods = scaleMetricData(D.paymentMethods.slice(0, 10).map(p => ({ label: p.code, value: p.mentions })), activeRange);
+  const rangedSideData = scaleMetricData([
+    { label: "buy",  value: D.platforms.reduce((s, p) => s + p.buyOffers,  0) },
+    { label: "sell", value: D.platforms.reduce((s, p) => s + p.sellOffers, 0) },
+  ], activeRange);
 
   return (
     <>
@@ -28,6 +36,7 @@ function ScreenOverview({ tier }) {
           { label: "Última sincronización", value: "—2 min" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       <div className="grid-2">
         <div className="editorial-card">
@@ -64,7 +73,7 @@ function ScreenOverview({ tier }) {
                 </Tip>
                 <span style={{ color: "var(--ink-4)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{idx.purpose}</span>
                 <span className="num" style={{ color: "var(--ink-1)", textAlign: "right", fontWeight: 600 }}>{idx.value}</span>
-                <Spark data={D.series[idx.code] || []} w={60} h={18} stroke="var(--accent)" />
+                <Spark data={metricRange(D.series[idx.code] || [], D.monthsLabels, activeRange).data} w={60} h={18} stroke="var(--accent)" />
               </div>
             ))}
           </div>
@@ -87,7 +96,7 @@ function ScreenOverview({ tier }) {
           </div>
           <div className="card-body">
             <HBarChart
-              data={platformsCap}
+              data={rangedPlatformsCap}
               barThickness={14}
               color="var(--accent)"
               labelWidth={70}
@@ -105,7 +114,7 @@ function ScreenOverview({ tier }) {
           </div>
           <div className="card-body">
             <VBarChart
-              data={D.capacityByCrypto.map(c => ({ label: c.code, value: c.cap }))}
+              data={rangedCapacityByCrypto}
               height={260}
               color="var(--ink-1)"
               valueFmt={v => v >= 1e6 ? `${(v/1e6).toFixed(0)} M` : v >= 1e3 ? `${(v/1e3).toFixed(0)} k` : v}
@@ -127,7 +136,7 @@ function ScreenOverview({ tier }) {
           </div>
           <div className="card-body">
             <HBarChart
-              data={D.paymentMethods.slice(0, 10).map(p => ({ label: p.code, value: p.mentions }))}
+              data={rangedPaymentMethods}
               barThickness={14}
               color="#1B2E55"
               labelWidth={94}
@@ -145,10 +154,7 @@ function ScreenOverview({ tier }) {
           </div>
           <div className="card-body">
             <VBarChart
-              data={[
-                { label: "buy",  value: D.platforms.reduce((s, p) => s + p.buyOffers,  0) },
-                { label: "sell", value: D.platforms.reduce((s, p) => s + p.sellOffers, 0) },
-              ]}
+              data={rangedSideData}
               height={300}
               color="#F59E0B"
               valueFmt={v => v.toLocaleString("en-US")}
@@ -193,17 +199,19 @@ const PLATFORM_PALETTE = {
   "KuCoin":      "#22C55E", // green
 };
 
-function ScreenPlatforms({ tier }) {
+function ScreenPlatforms({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
+  const activeRange = tier >= 2 ? range : "12m";
 
   // Sort by capacity (BOB) — drives the donut visual
   const byCap = [...D.platforms].sort((a, b) => b.capacityBob - a.capacityBob);
-  const donutData = byCap.map(p => ({
+  const donutData = scaleMetricData(byCap.map(p => ({
     label: p.name.replace(" P2P", ""),
     value: p.capacityBob,
     color: PLATFORM_PALETTE[p.name] || "#94A3B8",
-  }));
-  const totalCap = byCap.reduce((s, p) => s + p.capacityBob, 0);
+  })), activeRange);
+  const totalCap = donutData.reduce((s, p) => s + p.value, 0);
+  const pciRange = metricRange(D.series.PCI, D.monthsLabels, activeRange);
 
   return (
     <>
@@ -217,6 +225,7 @@ function ScreenPlatforms({ tier }) {
           { label: "Captura", value: "Abr · 2026" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       {/* Donut — visible para todos los tiers */}
       <div className="grid-2-eq" style={{ marginBottom: 24 }}>
@@ -264,7 +273,7 @@ function ScreenPlatforms({ tier }) {
                 ))}
               </div>
             ) : (
-              <InteractiveChart data={D.series.PCI} labels={D.monthsLabels} unit="HHI" height={220} showThreshold={0.60} />
+              <InteractiveChart data={pciRange.data} labels={pciRange.labels} unit="HHI" height={220} showThreshold={0.60} />
             )}
           </div>
         </div>
@@ -330,11 +339,12 @@ function ScreenPlatforms({ tier }) {
 }
 
 // =================== CRIPTOACTIVOS ===================
-function ScreenCryptos({ tier }) {
+function ScreenCryptos({ tier, range = "12m", setRange = () => {} }) {
   const D = window.BP2_DATA;
+  const activeRange = tier >= 2 ? range : "12m";
 
   // Capacity by coin — used in both vbar chart and the detailed table
-  const capRows = D.capacityByCrypto;
+  const capRows = scaleMetricData(D.capacityByCrypto.map((c, i) => ({ ...c, value: c.cap, seed: i + 1 })), activeRange, "cap");
   const totalCap = capRows.reduce((s, r) => s + r.cap, 0);
   const stableCodes = new Set(D.cryptos.filter(c => c.type === "stable").map(c => c.code));
   const stableCap = capRows.filter(r => stableCodes.has(r.code)).reduce((s, r) => s + r.cap, 0);
@@ -354,6 +364,7 @@ function ScreenCryptos({ tier }) {
           { label: "Captura", value: "Abr · 2026" },
         ]}
       />
+      {tier >= 2 && <RangeBar range={range} setRange={setRange} />}
 
       {/* Charts principales — visibles para todos los tiers */}
       <div className="grid-2" style={{ marginBottom: 24 }}>
